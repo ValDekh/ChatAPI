@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Chat.Domain.Entities
 {
-    public class Message: BaseAuditableEntity
+    public class Message: BaseEntity
     {
         public Guid UserId { get; set; }
         public string TextMessage { get; set; }
