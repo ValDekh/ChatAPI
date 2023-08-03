@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Chat.Domain.Entities
 {
-    public class User : BaseAuditableEntity
+    public class User : BaseEntity
     {
 
     }
