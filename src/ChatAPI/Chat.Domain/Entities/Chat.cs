@@ -13,3 +13,4 @@ namespace Chat.Domain.Entities
         public List<Message> Messages { get; set; }
     }
 }
+
