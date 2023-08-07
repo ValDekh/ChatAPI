@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Chat.Infrastructure.DataAccess.Interfaces
 {
-    internal interface ICollectionsName
+    public interface ICollectionsName
     {
+        public string CollectionName { get; set; }
     }
 }

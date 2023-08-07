@@ -6,7 +6,7 @@ namespace Chat.WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ValuesController : ControllerBase
+    public class ChatController : ControllerBase
     {
         // GET: api/<ValuesController>
         [HttpGet]

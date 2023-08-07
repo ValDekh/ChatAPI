@@ -1,5 +1,7 @@
-﻿using Chat.Domain.Common.Interfaces;
+﻿using Chat.Domain.Common;
+using Chat.Domain.Common.Interfaces;
 using Chat.Infrastructure.DataAccess;
+using Chat.Infrastructure.DataAccess.Interfaces;
 using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -12,39 +14,41 @@ using System.Threading.Tasks;
 
 namespace Chat.Infrastructure.Repositories
 {
-    public class Repository<T> : IRepository<T> where T : class
+    public class Repository<T,K> : IRepository<T>
+        where T : BaseEntity
+        where K : DbSetting
     {
         private readonly IMongoCollection<T> entityCollection;
-        public Repository(IOptions<DbSetting> entityDatabaseSettings)
+        public Repository(IOptions<K> entityDatabaseSettings)
         {
             var mongoClient = new MongoClient(entityDatabaseSettings.Value.ConnectionString);
             var mongoDatabase = mongoClient.GetDatabase(entityDatabaseSettings.Value.DatabaseName);
             entityCollection = mongoDatabase.GetCollection<T>(entityDatabaseSettings.Value.CollectionName);
         }
 
-        public Task<T> AddAsync(T entity)
+        public async Task<List<T>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await entityCollection.Find(_ => true).ToListAsync();
         }
 
-        public Task<T> DeleteAsync(ObjectId id)
+        public async Task<T?> GetByIdAsync(ObjectId id)
         {
-            throw new NotImplementedException();
+            return await entityCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
         }
 
-        public Task<List<T>> GetAllAsync()
+        public async Task AddAsync(T entity)
         {
-            throw new NotImplementedException();
+            await entityCollection.InsertOneAsync(entity);
         }
 
-        public Task<T> GetByIdAsync(int id)
+        public async Task UpdateAsync(ObjectId id, T entity)
         {
-            throw new NotImplementedException();
+            await entityCollection.ReplaceOneAsync(x => x.Id == id, entity);
         }
 
-        public Task<T> UpdateAsync(ObjectId id, T entity)
+        public async Task DeleteAsync(ObjectId id)
         {
-            throw new NotImplementedException();
+            await entityCollection.DeleteOneAsync(x => x.Id == id);
         }
     }
 }
