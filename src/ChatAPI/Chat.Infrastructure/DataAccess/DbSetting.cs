@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace Chat.Infrastructure.DataAccess
 {
-    public class ChatDbSetting
+    public class DbSetting
     {
         public string ConnectionString { get; set; }
         public string DatabaseName { get; set; }
-        public string ChatCollectionName { get; set; }
+        
     }
 }

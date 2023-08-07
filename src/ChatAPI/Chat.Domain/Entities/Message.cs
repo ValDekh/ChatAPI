@@ -1,4 +1,5 @@
 ﻿using Chat.Domain.Common;
+using MongoDB.Bson;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace Chat.Domain.Entities
 {
     public class Message: BaseEntity
     {
-        public Guid UserId { get; set; }
+        public ObjectId UserId { get; set; }
         public string TextMessage { get; set; }
     }
 }
