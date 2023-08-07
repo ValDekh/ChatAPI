@@ -1,4 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Chat.Infrastructure.DataAccess.Contexts;
+using Chat.Infrastructure.Repositories;
+using Chat.Domain.Entities;
+using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -8,36 +12,69 @@ namespace Chat.WebApi.Controllers
     [ApiController]
     public class ChatController : ControllerBase
     {
-        // GET: api/<ValuesController>
+        private readonly Repository<ChatEntity, ChatDbSettings> _chatService;
+        private readonly ChatDbSettings _chatDbSettings;
+        public ChatController(Repository<ChatEntity, ChatDbSettings> chatService)
+        {
+            _chatDbSettings.CollectionName = "chatCollection";
+            _chatService = chatService;
+        }
+    
         [HttpGet]
-        public IEnumerable<string> Get()
+        public async Task<ActionResult<IEnumerable<ChatEntity>>> GetAll()
         {
-            return new string[] { "value1", "value2" };
+            var chats = await _chatService.GetAllAsync();
+            return Ok(chats);
         }
 
-        // GET api/<ValuesController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        
+        [HttpGet("{id:length(24)}")]
+        public async Task<ActionResult<ChatEntity>> Get(ObjectId id)
         {
-            return "value";
+            var chat = await _chatService.GetByIdAsync(id);
+
+            if (chat == null)
+            {
+                return NotFound();
+            }
+            return Ok(chat);
         }
 
-        // POST api/<ValuesController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<IActionResult> Create(ChatEntity newChat)
         {
+            await _chatService.AddAsync(newChat);
+
+            return CreatedAtAction(nameof(Get), new { id = newChat.Id }, newChat);
         }
 
-        // PUT api/<ValuesController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        
+        [HttpPut("{id:length(24)}")]
+        public async Task<IActionResult> Update(ObjectId chatId, ChatEntity updateChatEntity)
         {
+            var oldChatEntity = await _chatService.GetByIdAsync(chatId);
+            if (oldChatEntity is null)
+            {
+                return NotFound();
+            }
+            updateChatEntity.Id = oldChatEntity.Id;
+            await _chatService.UpdateAsync(chatId, updateChatEntity);
+            return Ok();
         }
 
-        // DELETE api/<ValuesController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpDelete("{id:length(24)}")]
+        public async Task<IActionResult> Delete(ObjectId id)
         {
+            var chat = await _chatService.GetByIdAsync(id);
+
+            if (chat is null)
+            {
+                return NotFound();
+            }
+
+            await _chatService.DeleteAsync(id);
+
+            return NoContent();
         }
     }
 }

@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 
 namespace Chat.Domain.Common.Interfaces
 {
-    public interface IRepository <T> where T : BaseEntity
+    public interface IRepository <T> 
+        where T : BaseEntity
     {
         Task<List<T>> GetAllAsync();
         Task<T?> GetByIdAsync(ObjectId id);

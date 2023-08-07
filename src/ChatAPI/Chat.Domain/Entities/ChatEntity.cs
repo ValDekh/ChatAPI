@@ -1,4 +1,5 @@
 ﻿using Chat.Domain.Common;
+using MongoDB.Bson;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace Chat.Domain.Entities
 {
-    public class Chat : BaseEntity
+    public class ChatEntity : BaseEntity
     {
-        public List<User> Users { get; set; }
+        public List<ObjectId> Users { get; set; }
         public List<Message> Messages { get; set; }
     }
 }

@@ -19,11 +19,13 @@ namespace Chat.Infrastructure.Repositories
         where K : DbSetting
     {
         private readonly IMongoCollection<T> entityCollection;
-        public Repository(IOptions<K> entityDatabaseSettings)
+        private readonly K _dbEntity;
+        public Repository(IOptions<K> entityDatabaseSettings, K dbEntity)
         {
+            _dbEntity = dbEntity;
             var mongoClient = new MongoClient(entityDatabaseSettings.Value.ConnectionString);
             var mongoDatabase = mongoClient.GetDatabase(entityDatabaseSettings.Value.DatabaseName);
-            entityCollection = mongoDatabase.GetCollection<T>(entityDatabaseSettings.Value.CollectionName);
+            entityCollection = mongoDatabase.GetCollection<T>(_dbEntity.CollectionName);
         }
 
         public async Task<List<T>> GetAllAsync()
