@@ -20,13 +20,24 @@ namespace Chat.Infrastructure.Repositories
     {
         private readonly IMongoCollection<T> entityCollection;
         private readonly K _dbEntity;
-        public Repository(IOptions<K> entityDatabaseSettings, K dbEntity)
+        public Repository(K dbEntity)
         {
             _dbEntity = dbEntity;
-            var mongoClient = new MongoClient(entityDatabaseSettings.Value.ConnectionString);
-            var mongoDatabase = mongoClient.GetDatabase(entityDatabaseSettings.Value.DatabaseName);
+            var mongoClient = new MongoClient(dbEntity.ConnectionString);
+            var mongoDatabase = mongoClient.GetDatabase(dbEntity.DatabaseName);
             entityCollection = mongoDatabase.GetCollection<T>(_dbEntity.CollectionName);
+
         }
+
+        //public Repository(IOptions<K> entityDatabaseSettings, K dbEntity)
+        //{
+        //    _dbEntity = dbEntity;
+        //    var mongoClient = new MongoClient(entityDatabaseSettings.Value.ConnectionString);
+        //    var mongoDatabase = mongoClient.GetDatabase(entityDatabaseSettings.Value.DatabaseName);
+        //    entityCollection = mongoDatabase.GetCollection<T>(_dbEntity.CollectionName);
+        //}
+
+
 
         public async Task<List<T>> GetAllAsync()
         {

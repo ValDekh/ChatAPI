@@ -50,7 +50,7 @@ namespace Chat.WebApi.Controllers
 
         
         [HttpPut("{id:length(24)}")]
-        public async Task<IActionResult> Update(ObjectId chatId, ChatEntity updateChatEntity)
+        public async Task<IActionResult> Update([FromRoute] ObjectId chatId, [FromBody] ChatEntity updateChatEntity)
         {
             var oldChatEntity = await _chatService.GetByIdAsync(chatId);
             if (oldChatEntity is null)
