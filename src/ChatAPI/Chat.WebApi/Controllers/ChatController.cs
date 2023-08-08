@@ -3,8 +3,7 @@ using Chat.Infrastructure.Repositories;
 using Chat.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+using Chat.Domain.Common.Interfaces;
 
 namespace Chat.WebApi.Controllers
 {
@@ -12,14 +11,13 @@ namespace Chat.WebApi.Controllers
     [ApiController]
     public class ChatController : ControllerBase
     {
-        private readonly Repository<ChatEntity, ChatDbSettings> _chatService;
-        private readonly ChatDbSettings _chatDbSettings;
-        public ChatController(Repository<ChatEntity, ChatDbSettings> chatService)
+        private readonly IRepository<ChatEntity> _chatService;
+
+        public ChatController(IRepository<ChatEntity> chatService)
         {
-            _chatDbSettings.CollectionName = "chatCollection";
             _chatService = chatService;
         }
-    
+
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ChatEntity>>> GetAll()
         {

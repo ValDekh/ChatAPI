@@ -1,0 +1,25 @@
+{
+  "id": {64d29ac3cee2ce145840fc51},
+  "createdBy": {64d29adc19cd8f7e9401e4c3},
+  "createdDate": "2023-08-08T19:42:36.845Z",
+  "updatedBy": {},
+  "updatedDate": "2023-08-08T19:42:36.845Z",
+  "users": [
+    {64d29adc19cd8f7e9401e4c3},
+    {64d29af4e8ad5cf4515e0d6d},
+    {64d29afd20f79f818a3804f3},
+  ],
+  "messages": [
+    {
+      "id": {64d29b44b44ede787aa46010},
+      "createdBy": {64d29adc19cd8f7e9401e4c3},
+      "createdDate": "2023-08-08T19:42:36.845Z",
+      "updatedBy": {},
+      "updatedDate": "2023-08-08T19:42:36.845Z",
+      "fromWho": {64d29adc19cd8f7e9401e4c3},
+      "forWho": {64d29af4e8ad5cf4515e0d6d},
+      "chatId": {64d29ac3cee2ce145840fc51},
+      "textMessage": "HELLOOOOOOOOOOOOOOO!"
+    }
+  ]
+}
