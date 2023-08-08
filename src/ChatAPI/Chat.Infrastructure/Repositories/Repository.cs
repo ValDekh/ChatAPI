@@ -20,7 +20,7 @@ namespace Chat.Infrastructure.Repositories
     {
         private readonly IMongoCollection<T> entityCollection;
         private readonly K _dbEntity;
-        public Repository(IOptions<K> entityDatabaseSettings, K dbEntity)
+        public Repository(IOptions<DbSetting> entityDatabaseSettings, K dbEntity)
         {
             _dbEntity = dbEntity;
             var mongoClient = new MongoClient(entityDatabaseSettings.Value.ConnectionString);

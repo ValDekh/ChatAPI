@@ -15,8 +15,6 @@ namespace Chat.Infrastructure.DataAccess.Contexts
            CollectionName = collectionName;
         }
 
-        public ChatDbSettings() 
-            
-        }
+        public ChatDbSettings() { } 
     }
 }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Chat.Infrastructure.DataAccess
 {
-    public abstract class DbSetting : ICollectionsName
+    public class DbSetting : ICollectionsName
     {
         public string ConnectionString { get; set; }
         public string DatabaseName { get; set; }
