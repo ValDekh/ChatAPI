@@ -1,3 +1,4 @@
+using Chat.Application.Extensions;
 using Chat.Domain.Common;
 using Chat.Domain.Common.Interfaces;
 using Chat.Domain.Entities;
@@ -18,6 +19,7 @@ builder.Services.AddSingleton<DbSetting>(sp => sp.GetRequiredService<IOptions<Db
 builder.Services.AddScoped(typeof(IRepository<ChatEntity>), typeof(Repository<ChatEntity, ChatDbSettings>));
 builder.Services.AddSingleton<ChatDbSettings>(sp => new ChatDbSettings("chatCollection"));
 //builder.Services.AddSingleton<MessageDbSettings>();
+builder.Services.AddApplicationLayer();
 builder.Services.AddControllers();
 builder.Services.AddSwaggerGen();
 

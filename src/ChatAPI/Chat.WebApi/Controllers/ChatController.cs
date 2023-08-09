@@ -44,6 +44,7 @@ namespace Chat.WebApi.Controllers
             await _chatService.AddAsync(newChat);
 
             return CreatedAtAction(nameof(Get), new { id = newChat.Id }, newChat);
+
         }
 
         
