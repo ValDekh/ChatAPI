@@ -43,12 +43,12 @@ namespace Chat.WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(ChatDTO newChatDTO)
+        public async Task<IActionResult> Create([FromBody]ChatDTO newChatDTO)
         {
             var newChat = _mapper.Map<ChatEntity>(newChatDTO);
 
 
-            await _chatService.AddAsync(new ChatEntity(BsonSerializer.Serialize(newChat)));
+            await _chatService.AddAsync(newChat);
 
             return CreatedAtAction(nameof(Get), new { id = newChat.Id }, newChat);
 
