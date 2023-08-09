@@ -8,12 +8,15 @@ using System.Threading.Tasks;
 
 namespace Chat.Application.DTOs
 {
-    public class ChatDTO
+    public class MessageDTO
     {
         [BsonId]
         [BsonElement("_id")]
         public ObjectId Id { get; set; }
-        public List<ObjectId> Users { get; set; }
-        public List<MessageDTO> Messages { get; set; }
+        public ObjectId FromWho { get; set; }
+        public ObjectId ForWho { get; set; }
+        public ObjectId ChatId { get; set; }
+
+        public string TextMessage { get; set; }
     }
 }

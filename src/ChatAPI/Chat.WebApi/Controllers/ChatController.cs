@@ -4,6 +4,9 @@ using Chat.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using Chat.Domain.Common.Interfaces;
+using AutoMapper;
+using Chat.Application.DTOs;
+using MongoDB.Bson.Serialization;
 
 namespace Chat.WebApi.Controllers
 {
@@ -12,6 +15,7 @@ namespace Chat.WebApi.Controllers
     public class ChatController : ControllerBase
     {
         private readonly IRepository<ChatEntity> _chatService;
+        private readonly IMapper _mapper;
 
         public ChatController(IRepository<ChatEntity> chatService)
         {
@@ -25,7 +29,7 @@ namespace Chat.WebApi.Controllers
             return Ok(chats);
         }
 
-        
+
         [HttpGet("{id:length(24)}")]
         public async Task<ActionResult<ChatEntity>> Get(ObjectId id)
         {
@@ -39,15 +43,18 @@ namespace Chat.WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(ChatEntity newChat)
+        public async Task<IActionResult> Create(ChatDTO newChatDTO)
         {
-            await _chatService.AddAsync(newChat);
+            var newChat = _mapper.Map<ChatEntity>(newChatDTO);
+
+
+            await _chatService.AddAsync(new ChatEntity(BsonSerializer.Serialize(newChat)));
 
             return CreatedAtAction(nameof(Get), new { id = newChat.Id }, newChat);
 
         }
 
-        
+
         [HttpPut("{id:length(24)}")]
         public async Task<IActionResult> Update([FromRoute] ObjectId chatId, [FromBody] ChatEntity updateChatEntity)
         {
