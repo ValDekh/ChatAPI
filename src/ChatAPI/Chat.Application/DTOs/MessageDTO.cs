@@ -10,7 +10,7 @@ namespace Chat.Application.DTOs
 {
     public class MessageDTO
     {
-        [BsonId]
+        //[BsonId]
         //[BsonElement("_id")]
        // [BsonRepresentation(BsonType.ObjectId)]
       //  public string Id { get; set; }
