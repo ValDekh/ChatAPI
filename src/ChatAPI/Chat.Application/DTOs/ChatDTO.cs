@@ -10,10 +10,11 @@ namespace Chat.Application.DTOs
 {
     public class ChatDTO
     {
-        [BsonId]
-        [BsonElement("_id")]
-        public ObjectId Id { get; set; }
-        public List<ObjectId> Users { get; set; }
+        //[BsonId]
+        //[BsonRepresentation(BsonType.ObjectId)]
+        //public ObjectId Id { get; set; }
+        //[BsonRepresentation(BsonType.ObjectId)]
+        public List<string> Users { get; set; }
         public List<MessageDTO> Messages { get; set; }
     }
 }

@@ -7,6 +7,7 @@ using Chat.Domain.Common.Interfaces;
 using AutoMapper;
 using Chat.Application.DTOs;
 using MongoDB.Bson.Serialization;
+using MongoDB.Bson.IO;
 
 namespace Chat.WebApi.Controllers
 {
@@ -17,9 +18,10 @@ namespace Chat.WebApi.Controllers
         private readonly IRepository<ChatEntity> _chatService;
         private readonly IMapper _mapper;
 
-        public ChatController(IRepository<ChatEntity> chatService)
+        public ChatController(IRepository<ChatEntity> chatService, IMapper mapper)
         {
             _chatService = chatService;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -43,7 +45,7 @@ namespace Chat.WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody]ChatDTO newChatDTO)
+        public async Task<IActionResult> Create([FromBody] ChatDTO newChatDTO)
         {
             var newChat = _mapper.Map<ChatEntity>(newChatDTO);
 

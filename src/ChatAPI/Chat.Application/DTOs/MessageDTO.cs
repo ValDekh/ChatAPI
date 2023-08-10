@@ -11,11 +11,15 @@ namespace Chat.Application.DTOs
     public class MessageDTO
     {
         [BsonId]
-        [BsonElement("_id")]
-        public ObjectId Id { get; set; }
-        public ObjectId FromWho { get; set; }
-        public ObjectId ForWho { get; set; }
-        public ObjectId ChatId { get; set; }
+        //[BsonElement("_id")]
+       // [BsonRepresentation(BsonType.ObjectId)]
+      //  public string Id { get; set; }
+      //  [BsonRepresentation(BsonType.ObjectId)]
+        public string FromWho { get; set; }
+      //  [BsonRepresentation(BsonType.ObjectId)]
+        public string ForWho { get; set; }
+        //[BsonRepresentation(BsonType.ObjectId)]
+        public string ChatId { get; set; }
 
         public string TextMessage { get; set; }
     }
