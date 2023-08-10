@@ -46,6 +46,10 @@ namespace Chat.Infrastructure.Repositories
 
         public async Task<T?> GetByIdAsync(ObjectId id)
         {
+            //if (!ObjectId.TryParse(id, out ObjectId objectId))
+            //{
+            //    throw new InvalidCastException("Invalid ObjectId format.");
+            //}
             return await entityCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
         }
 
