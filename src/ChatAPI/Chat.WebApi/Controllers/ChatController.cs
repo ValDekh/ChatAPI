@@ -65,7 +65,7 @@ namespace Chat.WebApi.Controllers
         }
 
 
-        [HttpPut("{id:length(24)}")]
+        [HttpPut("{chatId:length(24)}")]
         public async Task<IActionResult> Update([FromRoute] string chatId, [FromBody] ChatDTO updateChatDTO)
         {
             if (!ObjectId.TryParse(chatId, out ObjectId objectId))
@@ -84,7 +84,7 @@ namespace Chat.WebApi.Controllers
         }
 
         [HttpDelete("{id:length(24)}")]
-        public async Task<IActionResult> Delete([FromQuery] string id)
+        public async Task<IActionResult> Delete([FromRoute] string id)
         {
             if (!ObjectId.TryParse(id, out ObjectId objectId))
             {
