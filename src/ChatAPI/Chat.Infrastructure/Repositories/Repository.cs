@@ -27,17 +27,6 @@ namespace Chat.Infrastructure.Repositories
             var mongoDatabase = mongoClient.GetDatabase(entityDatabaseSettings.Value.DatabaseName);
             entityCollection = mongoDatabase.GetCollection<T>(_dbEntity.CollectionName);
         }
-        //public Repository(K dbEntity)
-        //{
-        //    _dbEntity = dbEntity;
-        //    var mongoClient = new MongoClient(dbEntity.ConnectionString);
-        //    var mongoDatabase = mongoClient.GetDatabase(dbEntity.DatabaseName);
-        //    entityCollection = mongoDatabase.GetCollection<T>(_dbEntity.CollectionName);
-
-        //}
-
-
-
 
         public async Task<List<T>> GetAllAsync()
         {
@@ -46,10 +35,6 @@ namespace Chat.Infrastructure.Repositories
 
         public async Task<T?> GetByIdAsync(ObjectId id)
         {
-            //if (!ObjectId.TryParse(id, out ObjectId objectId))
-            //{
-            //    throw new InvalidCastException("Invalid ObjectId format.");
-            //}
             return await entityCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
         }
 
