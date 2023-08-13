@@ -9,6 +9,7 @@
   <ItemGroup>
     <Folder Include="Configurations\" />
     <Folder Include="Extensions\" />
+    <Folder Include="Collection Factory\Collections\" />
   </ItemGroup>
 
   <ItemGroup>
