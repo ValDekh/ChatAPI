@@ -3,12 +3,12 @@ using Chat.Infrastructure.Repositories;
 using Chat.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
-using Chat.Domain.Common.Interfaces;
 using AutoMapper;
 using Chat.Application.DTOs;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.IO;
 using System;
+using Chat.Domain.Interfaces;
 
 namespace Chat.WebApi.Controllers
 {

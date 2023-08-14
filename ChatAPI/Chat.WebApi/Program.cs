@@ -1,7 +1,7 @@
 using Chat.Application.Extensions;
 using Chat.Domain.Common;
-using Chat.Domain.Common.Interfaces;
 using Chat.Domain.Entities;
+using Chat.Domain.Interfaces;
 using Chat.Infrastructure.DataAccess;
 using Chat.Infrastructure.DataAccess.Contexts;
 using Chat.Infrastructure.Repositories;
