@@ -12,13 +12,9 @@ using Swashbuckle.AspNetCore.SwaggerUI;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.Configure<DbSetting>(
     builder.Configuration.GetSection("DbSet"));
-//builder.Services.AddSingleton<DbSetting>();
-//builder.Configuration.GetSection(nameof(DbSetting)));
 builder.Services.AddSingleton<DbSetting>(sp => sp.GetRequiredService<IOptions<DbSetting>>().Value);
-//builder.Services.AddScoped(typeof(IRepository<BaseEntity>), typeof(Repository<BaseEntity, DbSetting>));
 builder.Services.AddScoped(typeof(IRepository<ChatEntity>), typeof(Repository<ChatEntity, ChatDbSettings>));
 builder.Services.AddSingleton<ChatDbSettings>(sp => new ChatDbSettings("chatCollection"));
-//builder.Services.AddSingleton<MessageDbSettings>();
 builder.Services.AddApplicationLayer();
 builder.Services.AddControllers();
 builder.Services.AddSwaggerGen();
