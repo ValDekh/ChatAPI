@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
-using Chat.Application.DTOs;
+using Chat.Application.DTOs.Chat;
+using Chat.Application.DTOs.Message;
 using Chat.Domain.Common;
 using Chat.Domain.Entities;
 using MongoDB.Bson;
