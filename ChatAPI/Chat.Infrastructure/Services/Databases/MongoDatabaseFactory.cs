@@ -1,4 +1,5 @@
 ﻿using Chat.Infrastructure.Collection_Factory.Clients;
+using Chat.Infrastructure.Collection_Factory.Databases;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
@@ -9,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Chat.Infrastructure.Collection_Factory.Databases
+namespace Chat.Infrastructure.Services.Databases
 {
     public abstract class MongoDatabaseFactory<TOptions> : IMongoDatabaseFactory where TOptions : MongoDatabaseOptions, new()
     {
@@ -33,19 +34,19 @@ namespace Chat.Infrastructure.Collection_Factory.Databases
             using var nameScope = _logger.BeginScope("{ClientName}", name);
             if (_cache.ContainsKey(name))
             {
-                LoggerExtensions.LogDebug(_logger, "Database retrieved from cache");
+                _logger.LogDebug("Database retrieved from cache");
                 return _cache[name];
             }
 
             var client = _clientFactory.GetOrCreate();
             var names = await (await client.ListDatabaseNamesAsync().ConfigureAwait(false)).ToListAsync(ct).ConfigureAwait(false);
-            if (!names.Any(x => x.Equals(name, StringComparison.InvariantCultureIgnoreCase))) 
+            if (!names.Any(x => x.Equals(name, StringComparison.InvariantCultureIgnoreCase)))
             {
                 throw new ArgumentOutOfRangeException($"Database: {name} doesn't exist.");
             }
 
             _cache[name] = client.GetDatabase(name);
-            LoggerExtensions.LogInformation(_logger, "Database added to cache");
+            _logger.LogInformation("Database added to cache");
 
             return _cache[name];
 

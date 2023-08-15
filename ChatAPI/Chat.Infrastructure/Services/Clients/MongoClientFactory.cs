@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Chat.Infrastructure.Collection_Factory.Clients;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using System;
@@ -8,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Chat.Infrastructure.Collection_Factory.Clients
+namespace Chat.Infrastructure.Services.Clients
 {
     public class MongoClientFactory : IMongoClientFactory
     {
@@ -29,14 +30,14 @@ namespace Chat.Infrastructure.Collection_Factory.Clients
             using var nameScope = _logger.BeginScope("{ClientName}", name);
             if (_cache.ContainsKey(name))
             {
-                LoggerExtensions.LogDebug(_logger, "Client retrieved from cache");
+                _logger.LogDebug("Client retrieved from cache");
                 return _cache[name];
             }
 
             _cache[name] = new MongoClient(new MongoUrl(_options.Url));
 
             using var urlScope = _logger.BeginScope("{Url}", _options.Url);
-            LoggerExtensions.LogInformation(_logger, "Client add to cache");
+            _logger.LogInformation("Client add to cache");
 
             return _cache[name];
         }

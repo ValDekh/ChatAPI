@@ -10,14 +10,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Chat.Infrastructure.Collection_Factory.Collections
+namespace Chat.Infrastructure.Services.Collections
 {
-    public abstract class MongoCollectionFactory <TOption, TFactory> : IMongoCollectionFactory
-        where TOption:MongoCollectionOptions, new()
+    public abstract class MongoCollectionFactory<TOption, TFactory> : IMongoCollectionFactory
+        where TOption : MongoCollectionOptions, new()
         where TFactory : IMongoDatabaseFactory
 
     {
-        private readonly ConcurrentDictionary<string,object> _cache = new();
+        private readonly ConcurrentDictionary<string, object> _cache = new();
         private readonly TOption _option;
         private readonly TFactory _factory;
         private readonly ILogger _logger;
@@ -43,12 +43,12 @@ namespace Chat.Infrastructure.Collection_Factory.Collections
 
             if (_cache.ContainsKey(name))
             {
-                LoggerExtensions.LogDebug(_logger, "Collection retrieved from cache");
+                _logger.LogDebug("Collection retrieved from cache");
             }
             else
             {
                 _cache[name] = GetMongoCollection(database, name);
-                LoggerExtensions.LogInformation(_logger, "Collection added to cache");
+                _logger.LogInformation("Collection added to cache");
             }
 
             return (IMongoCollection<T>)_cache[name];

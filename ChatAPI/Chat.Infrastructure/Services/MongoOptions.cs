@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Chat.Infrastructure
+namespace Chat.Infrastructure.Services
 {
     public abstract class MongoConnectionOptions
     {
