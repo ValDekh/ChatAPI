@@ -26,7 +26,7 @@ namespace Chat.WebApi.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAllAsync()
         {
             var chats = await _chatService.GetAllAsync();
             var getedChatDTO = _mapper.Map<IEnumerable<ChatDTO>>(chats);
@@ -34,14 +34,10 @@ namespace Chat.WebApi.Controllers
         }
 
 
-        [HttpGet("{id:length(24)}")]
-        public async Task<IActionResult> Get(Guid id)
+        [HttpGet("{id:guid}")]
+        public async Task<IActionResult> GetByIdAsync(Guid id)
         {
-            if (!ObjectId.TryParse(id, out ObjectId objectId))
-            {
-                return BadRequest("Invalid ObjectId format.");
-            }
-
+            
             var chat = await _chatService.GetByIdAsync(objectId);
 
             if (chat == null)
