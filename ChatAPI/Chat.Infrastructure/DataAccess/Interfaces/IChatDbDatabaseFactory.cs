@@ -1,4 +1,4 @@
-﻿using Chat.Infrastructure.Collection_Factory.Databases;
+﻿using Chat.Domain.Interfaces.Databases;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;

@@ -6,8 +6,6 @@ using Microsoft.Extensions.Options;
 
 namespace Chat.Infrastructure.DataAccess.ChatDb
 {
-    
-
     public sealed class ChatsCollectionFactory :
         MongoCollectionFactory<ChatCollectionOptions, IChatDbDatabaseFactory>,
         IChatCollectionFactory

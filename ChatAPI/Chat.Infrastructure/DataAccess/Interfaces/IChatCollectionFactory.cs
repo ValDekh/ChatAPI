@@ -1,4 +1,4 @@
-﻿using Chat.Infrastructure.Collection_Factory.Collections;
+﻿using Chat.Domain.Interfaces.Collections;
 using System;
 using System.Collections.Generic;
 using System.Linq;

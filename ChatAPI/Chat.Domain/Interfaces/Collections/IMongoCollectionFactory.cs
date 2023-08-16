@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Chat.Infrastructure.Collection_Factory.Collections
+namespace Chat.Domain.Interfaces.Collections
 {
     public interface IMongoCollectionFactory
     {

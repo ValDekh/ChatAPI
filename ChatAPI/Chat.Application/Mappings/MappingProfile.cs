@@ -17,7 +17,7 @@ namespace Chat.Application.Common.Mappings
         public MappingProfile()
         {
             CreateMap<ChatEntity, ChatDTO>()
-             .ForMember(dest => dest.Users, opt => opt.MapFrom(src => src.Users.ConvertAll(u => u.ToString())))
+             .ForMember(dest => dest.Users, opt => opt.MapFrom(src => src.Users.ConvertAll(u => Guid.Parse(u))))
              .ForMember(dest => dest.Messages, opt => opt.MapFrom(src => src.Messages));
 
             CreateMap<Message, MessageDTO>()

@@ -26,7 +26,7 @@ namespace Chat.WebApi.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ChatDTO>>> GetAll()
+        public async Task<IActionResult> GetAll()
         {
             var chats = await _chatService.GetAllAsync();
             var getedChatDTO = _mapper.Map<IEnumerable<ChatDTO>>(chats);
@@ -35,7 +35,7 @@ namespace Chat.WebApi.Controllers
 
 
         [HttpGet("{id:length(24)}")]
-        public async Task<ActionResult<ChatDTO>> Get([FromRoute] string id)
+        public async Task<IActionResult> Get(Guid id)
         {
             if (!ObjectId.TryParse(id, out ObjectId objectId))
             {

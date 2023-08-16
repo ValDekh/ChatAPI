@@ -1,4 +1,4 @@
-﻿using Chat.Infrastructure.Collection_Factory.Clients;
+﻿using Chat.Domain.Interfaces.Clients;
 using Chat.Infrastructure.DataAccess.ChatDb.Options;
 using Chat.Infrastructure.DataAccess.Interfaces;
 using Chat.Infrastructure.Services.Databases;

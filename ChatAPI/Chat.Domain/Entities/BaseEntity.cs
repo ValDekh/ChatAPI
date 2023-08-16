@@ -11,8 +11,6 @@ namespace Chat.Domain.Entities
     public class BaseEntity
     {
         [BsonId]
-        // [BsonElement("_id")]
-        // [BsonRepresentation(BsonType.ObjectId)]
         public ObjectId Id { get; set; }
         public ObjectId? CreatedBy { get; set; }
         public DateTime? CreatedDate { get; set; }

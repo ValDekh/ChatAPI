@@ -14,23 +14,18 @@ using System.Threading.Tasks;
 
 namespace Chat.Infrastructure.Repositories
 {
-    public class Repository<T, K> : IRepository<T>
+    public class Repository<T> : IRepository<T>
         where T : BaseEntity
-        where K : DbSetting
     {
-        private readonly IMongoCollection<T> entityCollection;
-        private readonly K _dbEntity;
-        public Repository(IOptions<DbSetting> entityDatabaseSettings, K dbEntity)
+        private readonly IMongoCollection<T> _entityCollection;
+        public Repository(IMongoCollection<T> entityCollection)
         {
-            _dbEntity = dbEntity;
-            var mongoClient = new MongoClient(entityDatabaseSettings.Value.ConnectionString);
-            var mongoDatabase = mongoClient.GetDatabase(entityDatabaseSettings.Value.DatabaseName);
-            entityCollection = mongoDatabase.GetCollection<T>(_dbEntity.CollectionName);
+            _entityCollection= entityCollection;
         }
 
         public async Task<List<T>> GetAllAsync()
         {
-            return await entityCollection.Find(_ => true).ToListAsync();
+            return await _entityCollection.Find(_ => true).ToListAsync();
         }
 
         public async Task<T?> GetByIdAsync(ObjectId id)
