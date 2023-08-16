@@ -37,7 +37,11 @@ namespace Chat.WebApi.Controllers
         [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetByIdAsync(Guid id)
         {
-            
+            if (!ObjectId.TryParse(id, out ObjectId objectId))
+            {
+                return BadRequest("Invalid ObjectId format.");
+            }
+
             var chat = await _chatService.GetByIdAsync(objectId);
 
             if (chat == null)
