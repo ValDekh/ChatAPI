@@ -30,22 +30,22 @@ namespace Chat.Infrastructure.Repositories
 
         public async Task<T?> GetByIdAsync(ObjectId id)
         {
-            return await entityCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
+            return await _entityCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
         }
 
         public async Task AddAsync(T entity)
         {
-            await entityCollection.InsertOneAsync(entity);
+            await _entityCollection.InsertOneAsync(entity);
         }
 
         public async Task UpdateAsync(ObjectId id, T entity)
         {
-            await entityCollection.ReplaceOneAsync(x => x.Id == id, entity);
+            await _entityCollection.ReplaceOneAsync(x => x.Id == id, entity);
         }
 
         public async Task DeleteAsync(ObjectId id)
         {
-            await entityCollection.DeleteOneAsync(x => x.Id == id);
+            await _entityCollection.DeleteOneAsync(x => x.Id == id);
         }
     }
 }

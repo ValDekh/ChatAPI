@@ -9,6 +9,9 @@ using MongoDB.Bson.IO;
 using System;
 using Chat.Domain.Interfaces;
 using Chat.Application.DTOs.Chat;
+using Chat.Infrastructure.DataAccess;
+using Chat.Infrastructure.Factory;
+using Chat.Infrastructure.Services;
 
 namespace Chat.WebApi.Controllers
 {
@@ -16,52 +19,44 @@ namespace Chat.WebApi.Controllers
     [ApiController]
     public class ChatController : ControllerBase
     {
+
         private readonly IRepository<ChatEntity> _chatService;
         private readonly IMapper _mapper;
 
-        public ChatController(IRepository<ChatEntity> chatService, IMapper mapper)
+        public ChatController(DbSetting dbSetting, IMapper mapper)
         {
-            _chatService = chatService;
+            _chatService = new MongoRepositoryFactory(dbSetting).CreateRepository<ChatEntity>("chatCollection");
             _mapper = mapper;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAllAsync()
         {
-            var chats = await _chatService.GetAllAsync();
-            var getedChatDTO = _mapper.Map<IEnumerable<ChatDTO>>(chats);
-            return Ok(chats);
+            var getAllService = new GetAllService<ChatEntity, ChatDTO>(_mapper, _chatService);
+            var gotChatDTO = await getAllService.GetAllAsync();
+            return Ok(gotChatDTO);
         }
 
 
         [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetByIdAsync(Guid id)
         {
-            if (!ObjectId.TryParse(id, out ObjectId objectId))
-            {
-                return BadRequest("Invalid ObjectId format.");
-            }
+            var getByIdService = new GetByIdService<ChatEntity, ChatDTO>(_mapper, _chatService, id);
+            var gotChatDTO = await getByIdService.GetByIdAsync();
 
-            var chat = await _chatService.GetByIdAsync(objectId);
-
-            if (chat == null)
+            if (gotChatDTO == null)
             {
                 return NotFound();
             }
-            var getedChatDTO = _mapper.Map<ChatDTO>(chat);
-            return Ok(getedChatDTO);
+            return Ok(gotChatDTO);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] ChatDTO newChatDTO)
+        public async Task<IActionResult> CreateAsync (ChatDTO newChatDTO)
         {
             var newChat = _mapper.Map<ChatEntity>(newChatDTO);
-
-
             await _chatService.AddAsync(newChat);
-
-            return CreatedAtAction(nameof(Get), new { id = newChat.Id }, newChat);
-
+            return CreatedAtAction(nameof(GetByIdAsync), new { id = newChat.Id }, newChat);
         }
 
 
