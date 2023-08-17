@@ -9,7 +9,6 @@
   <ItemGroup>
     <Folder Include="Configurations\" />
     <Folder Include="DataAccess\Interfaces\" />
-    <Folder Include="Extensions\" />
   </ItemGroup>
 
   <ItemGroup>

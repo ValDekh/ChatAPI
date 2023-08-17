@@ -7,6 +7,7 @@ using Chat.Infrastructure.Repositories;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerUI;
+using Chat.Domain.Context;
 
 namespace Chat.WebApi
 {
@@ -22,8 +23,6 @@ namespace Chat.WebApi
             services.AddControllers();
             services.Configure<DbSetting>(Configuration.GetSection("DbSet"));
             services.AddSingleton<DbSetting>(sp => sp.GetRequiredService<IOptions<DbSetting>>().Value);
-            services.AddScoped(typeof(IRepository<ChatEntity>), typeof(Repository<ChatEntity, ChatDbSettings>));
-            services.AddSingleton<ChatDbSettings>(sp => new ChatDbSettings("chatCollection"));
             services.AddApplicationLayer();
             services.AddSwaggerGen();
         }

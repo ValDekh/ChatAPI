@@ -1,6 +1,6 @@
-﻿using Chat.Domain.Entities;
+﻿using Chat.Domain.Context;
+using Chat.Domain.Entities;
 using Chat.Domain.Interfaces;
-using Chat.Infrastructure.DataAccess;
 using Chat.Infrastructure.Repositories;
 using MongoDB.Driver;
 using System;

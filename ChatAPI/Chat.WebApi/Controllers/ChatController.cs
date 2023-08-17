@@ -43,7 +43,6 @@ namespace Chat.WebApi.Controllers
         {
             var getByIdService = new GetByIdService<ChatEntity, ChatDTO>(_mapper, _chatService, id);
             var gotChatDTO = await getByIdService.GetByIdAsync();
-
             if (gotChatDTO == null)
             {
                 return NotFound();
@@ -63,38 +62,24 @@ namespace Chat.WebApi.Controllers
         [HttpPut("{chatId:guid}")]
         public async Task<IActionResult> UpdateAsync(Guid chatId, ChatDTO updateChatDTO)
         {
-            if (!ObjectId.TryParse(chatId, out ObjectId objectId))
-            {
-                return BadRequest("Invalid ObjectId format.");
-            }
-            var oldChatEntity = await _chatService.GetByIdAsync(objectId);
-            if (oldChatEntity is null)
+            var updateService = new UpdateService<ChatEntity, ChatDTO>(_mapper, _chatService, updateChatDTO, chatId);
+            var isUpdateSucces = await updateService.UpdateAsync();
+            if (!isUpdateSucces)
             {
                 return NotFound();
             }
-            var updateChatEntity = _mapper.Map<ChatEntity>(updateChatDTO);
-            updateChatEntity.Id = oldChatEntity.Id;
-            await _chatService.UpdateAsync(objectId, updateChatEntity);
             return Ok();
         }
 
-        [HttpDelete("{id:length(24)}")]
-        public async Task<IActionResult> Delete([FromRoute] string id)
+        [HttpDelete("{id:guid}")]
+        public async Task<IActionResult> DeleteAsync(Guid id)
         {
-            if (!ObjectId.TryParse(id, out ObjectId objectId))
-            {
-                return BadRequest("Invalid ObjectId format.");
-            }
-
-            var chat = await _chatService.GetByIdAsync(objectId);
-
-            if (chat is null)
+            var deleteService = new DeleteService<ChatEntity, ChatDTO>(_mapper, _chatService, id);
+            var isDeleteSucces = await deleteService.DeleteAsync();
+            if (!isDeleteSucces)
             {
                 return NotFound();
             }
-
-            await _chatService.DeleteAsync(objectId);
-
             return NoContent();
         }
     }
