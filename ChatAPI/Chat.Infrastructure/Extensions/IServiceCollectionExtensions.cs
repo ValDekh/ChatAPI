@@ -1,7 +1,9 @@
-﻿using Chat.Domain.Context;
+﻿using Chat.Application.Services.Interfaces;
+using Chat.Domain.Context;
 using Chat.Domain.Entities;
 using Chat.Domain.Interfaces;
 using Chat.Infrastructure.Repositories;
+using Chat.Infrastructure.Services;
 using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,31 +26,27 @@ namespace Chat.Infrastructure.Extensions
         }
 
 
-        public static void AddDbContext(this IServiceCollection services, IConfiguration configuration)
+        private static void AddDbContext(this IServiceCollection services, IConfiguration configuration)
         {
             services.Configure<DbSetting>(options => configuration.GetSection("DbSet").Bind(options));
             services.AddSingleton<DbSetting>(sp => sp.GetRequiredService<IOptions<DbSetting>>().Value);
         }
     
 
-        private static void AddRepositories<T>(this IServiceCollection services) where T:BaseEntity
+        private static void AddRepositories(this IServiceCollection services)
         {
             services
-                .AddScoped(typeof(IRepository<T>), typeof(Repository<T>));
-        }
-
-        public static void AddInfrastructureLayer(this IServiceCollection services)
-        {
-            services.AddServices();
+                .AddTransient(typeof(IRepository<>), typeof(Repository<>));
         }
 
         private static void AddServices(this IServiceCollection services)
         {
             services
-                .AddTransient<IMediator, Mediator>()
-                .AddTransient<IDomainEventDispatcher, DomainEventDispatcher>()
-                .AddTransient<IDateTimeService, DateTimeService>()
-                .AddTransient<IEmailService, EmailService>();
+                .AddTransient(typeof(IGetAllService<,>), typeof(GetAllService<,>))
+                .AddTransient(typeof(IGetByIdService<,>), typeof(GetByIdService<,>))
+                .AddTransient(typeof(ICreateService<,>), typeof(CreateService<,>))
+                .AddTransient(typeof(IUpdateService<,>), typeof(UpdateService<,>))
+                .AddTransient(typeof(IDeleteService<,>), typeof(DeleteService<,>));
         }
 
 

@@ -2,7 +2,6 @@
 using Chat.Application.DTOs.Chat;
 using Chat.Application.DTOs.Message;
 using Chat.Application.Services.Converters;
-using Chat.Domain.Common;
 using Chat.Domain.Entities;
 using MongoDB.Bson;
 using System;

@@ -6,6 +6,7 @@ using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerUI;
 using Chat.Domain.Context;
+using Chat.Infrastructure.Extensions;
 
 namespace Chat.WebApi
 {
@@ -19,9 +20,10 @@ namespace Chat.WebApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-         //   services.Configure<DbSetting>(Configuration.GetSection("DbSet"));
+           // services.Configure<DbSetting>(Configuration.GetSection("DbSet"));
            // services.AddSingleton<DbSetting>(sp => sp.GetRequiredService<IOptions<DbSetting>>().Value);
             services.AddApplicationLayer();
+            services.AddInfrastructureLayer(Configuration);
             services.AddSwaggerGen();
         }
 
@@ -34,6 +36,7 @@ namespace Chat.WebApi
             }
 
             app.UseHttpsRedirection();
+            app.UseRouting();
             app.UseAuthorization();
             app.UseEndpoints(endpoints => endpoints.MapControllers());
 

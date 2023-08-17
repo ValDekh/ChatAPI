@@ -1,15 +1,7 @@
 ﻿using Chat.Domain.Entities;
 using Chat.Domain.Interfaces;
-using Chat.Infrastructure.DataAccess;
-using Chat.Infrastructure.DataAccess.Interfaces;
-using Microsoft.Extensions.Options;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 
 namespace Chat.Infrastructure.Repositories
@@ -20,7 +12,7 @@ namespace Chat.Infrastructure.Repositories
         private readonly IMongoCollection<T> _entityCollection;
         public Repository(IMongoCollection<T> entityCollection)
         {
-            _entityCollection= entityCollection;
+            _entityCollection = entityCollection;
         }
 
         public async Task<List<T>> GetAllAsync()
