@@ -1,8 +1,6 @@
 ﻿using Chat.Application.Extensions;
 using Chat.Domain.Entities;
 using Chat.Domain.Interfaces;
-using Chat.Infrastructure.DataAccess.Contexts;
-using Chat.Infrastructure.DataAccess;
 using Chat.Infrastructure.Repositories;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.Swagger;
@@ -21,8 +19,8 @@ namespace Chat.WebApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.Configure<DbSetting>(Configuration.GetSection("DbSet"));
-            services.AddSingleton<DbSetting>(sp => sp.GetRequiredService<IOptions<DbSetting>>().Value);
+         //   services.Configure<DbSetting>(Configuration.GetSection("DbSet"));
+           // services.AddSingleton<DbSetting>(sp => sp.GetRequiredService<IOptions<DbSetting>>().Value);
             services.AddApplicationLayer();
             services.AddSwaggerGen();
         }

@@ -1,5 +1,4 @@
-﻿using Chat.Infrastructure.DataAccess.Contexts;
-using Chat.Infrastructure.Repositories;
+﻿using Chat.Infrastructure.Repositories;
 using Chat.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
@@ -9,9 +8,9 @@ using MongoDB.Bson.IO;
 using System;
 using Chat.Domain.Interfaces;
 using Chat.Application.DTOs.Chat;
-using Chat.Infrastructure.DataAccess;
 using Chat.Infrastructure.Factory;
 using Chat.Infrastructure.Services;
+using Chat.Domain.Context;
 
 namespace Chat.WebApi.Controllers
 {

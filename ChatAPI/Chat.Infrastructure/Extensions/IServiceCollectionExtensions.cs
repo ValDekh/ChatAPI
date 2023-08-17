@@ -1,5 +1,7 @@
 ﻿using Chat.Domain.Context;
-using Chat.Infrastructure.DataAccess;
+using Chat.Domain.Entities;
+using Chat.Domain.Interfaces;
+using Chat.Infrastructure.Repositories;
 using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,32 +20,21 @@ namespace Chat.Infrastructure.Extensions
         {
             services.AddDbContext(configuration);
             services.AddRepositories();
+            services.AddServices();
         }
 
 
         public static void AddDbContext(this IServiceCollection services, IConfiguration configuration)
         {
-
-            //services.AddDbContext<ApplicationDbContext>(options =>
-            //   options.UseSqlServer(connectionString,
-            //       builder => builder.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
-            services.Configure<BookstoreDatabaseSettings>(
-        Configuration.GetSection(nameof(BookstoreDatabaseSettings)));
-
-
-            services.Configure<DbSetting>(Configuration.GetSection("DbSet"));
+            services.Configure<DbSetting>(options => configuration.GetSection("DbSet").Bind(options));
             services.AddSingleton<DbSetting>(sp => sp.GetRequiredService<IOptions<DbSetting>>().Value);
         }
+    
 
-        private static void AddRepositories(this IServiceCollection services)
+        private static void AddRepositories<T>(this IServiceCollection services) where T:BaseEntity
         {
             services
-                .AddTransient(typeof(IUnitOfWork), typeof(UnitOfWork))
-                .AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>))
-                .AddTransient<IPlayerRepository, PlayerRepository>()
-                .AddTransient<IClubRepository, ClubRepository>()
-                .AddTransient<IStadiumRepository, StadiumRepository>()
-                .AddTransient<ICountryRepository, CountryRepository>();
+                .AddScoped(typeof(IRepository<T>), typeof(Repository<T>));
         }
 
         public static void AddInfrastructureLayer(this IServiceCollection services)
