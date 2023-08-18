@@ -9,6 +9,7 @@ using MongoDB.Bson;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -21,27 +22,32 @@ namespace Chat.Infrastructure.Services
         private readonly IMapper _mapper;
         private readonly IRepository<TEntity> _repository;
         private TDTO _updateDTO { get; set; }
-        private ObjectId _objectId { get; }
+        private string _id { get; }
 
-        public UpdateService(IMapper mapper, IRepository<TEntity> repository, TDTO updateDTO, ObjectId objectId)
+        public UpdateService(IMapper mapper, IRepository<TEntity> repository, TDTO updateDTO, string id)
         {
             _mapper = mapper;
             _repository = repository;
             _updateDTO = updateDTO;
-            _objectId = objectId;
+            _id = id;
         }
 
-        public async Task<bool> UpdateAsync()
+        public async Task<StatusCodeResult> UpdateAsync()
         {
-            var oldEntity = await _repository.GetByIdAsync(_objectId);
+            if (!ObjectId.TryParse(_id, out ObjectId objectId))
+            {
+                throw new InvalidDataException("Invalid ObjectId format.");
+            }
+
+            var oldEntity = await _repository.GetByIdAsync(objectId);
             if (oldEntity is null)
             {
-                return false;
+                return new NotFoundResult();
             }
             var updateEntity = _mapper.Map<TEntity>(_updateDTO);
             updateEntity.Id = oldEntity.Id;
-            await _repository.UpdateAsync(_objectId, updateEntity);
-            return true;
+            await _repository.UpdateAsync(objectId, updateEntity);
+            return new OkResult();
 
         }
     }

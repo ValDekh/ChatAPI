@@ -37,8 +37,8 @@ namespace Chat.WebApi.Controllers
         }
 
 
-        [HttpGet("{id:ObjectId}")]
-        public async Task<IActionResult> GetByIdAsync(ObjectId id)
+        [HttpGet("{id:length(24)}")]
+        public async Task<IActionResult> GetByIdAsync(string id)
         {
             var getByIdService = new GetByIdService<ChatEntity, ChatDTO>(_mapper, _chatService, id);
             var gotChatDTO = await getByIdService.GetByIdAsync();
@@ -54,40 +54,37 @@ namespace Chat.WebApi.Controllers
         {
             var createService = new CreateService<ChatEntity,ChatDTO>(_mapper, _chatService, newChatDTO);
             var chatEntity = await createService.CreateAsync();
-
-            if (ObjectId.TryParse((chatEntity.Id).ToString(), out _))
-            {
-                return CreatedAtAction(nameof(GetByIdAsync), new { id = chatEntity.Id }, chatEntity);
-            }
-            else
-            {
-                return BadRequest("Invalid ObjectId");
-            }
+            return CreatedAtAction(nameof(GetByIdAsync), new { id = chatEntity.Id.ToString() }, chatEntity);
+            //if (ObjectId.TryParse((chatEntity.Id).ToString(), out _))
+            //{
+            //    return CreatedAtAction(nameof(GetByIdAsync), new { id = chatEntity.Id.ToString() }, chatEntity);
+            //}
+            //else
+            //{
+            //    return BadRequest("Invalid ObjectId");
+            //}
             //return Ok(chatEntity);
         }
 
 
-        [HttpPut("{chatId:ObjectId}")]
-        public async Task<IActionResult> UpdateAsync([FromRoute]ObjectId chatId,[FromBody] ChatDTO updateChatDTO)
+        [HttpPut("{chatId:length(24)}")]
+        public async Task<IActionResult> UpdateAsync([FromRoute]string chatId,[FromBody] ChatDTO updateChatDTO)
         {
             var updateService = new UpdateService<ChatEntity, ChatDTO>(_mapper, _chatService, updateChatDTO, chatId);
             var isUpdateSucces = await updateService.UpdateAsync();
-            if (!isUpdateSucces)
-            {
-                return NotFound();
-            }
+            //if (!isUpdateSucces)
+            //{
+            //    return NotFound();
+            //}
             return Ok();
         }
 
-        [HttpDelete("{id:ObjectId}")]
-        public async Task<IActionResult> DeleteAsync(ObjectId id)
+        [HttpDelete("{id:length(24)}")]
+        public async Task<IActionResult> DeleteAsync(string id)
         {
             var deleteService = new DeleteService<ChatEntity, ChatDTO>(_mapper, _chatService, id);
             var isDeleteSucces = await deleteService.DeleteAsync();
-            if (!isDeleteSucces)
-            {
-                return NotFound();
-            }
+            
             return NoContent();
         }
     }
