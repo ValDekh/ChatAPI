@@ -13,34 +13,4 @@
 		}
 	]
 }
-{
-	"users": [
-		"64d5600e578e6e61eff83e76",
-		"64d29af4e8ad5cf4515e0d6d",
-		"64d29afd20f79f818a3804f3"
-	],
-	"messages": [
-		{
-			"fromWho": "64d29adc19cd8f7e9401e4c3",
-			"forWho": "64d29af4e8ad5cf4515e0d6d",
-			"chatId": "64d29ac3cee2ce145840fc51",
-			"textMessage": "HELLOOOOOO"
-		}
-	]
-}
 
-{
-	"users": [
-		"64d29adc19cd8f7e9401e4c3",
-		"64d29af4e8ad5cf4515e0d6d",
-		"64d29afd20f79f818a3804f3"
-	],
-	"messages": [
-		{
-			"fromWho": "64d29adc19cd8f7e9401e4c3",
-			"forWho": "64d29af4e8ad5cf4515e0d6d",
-			"chatId": "64d29ac3cee2ce145840fc51",
-			"textMessage": "NE HELOOOOO A ZDOROVA"
-		}
-	]
-}
