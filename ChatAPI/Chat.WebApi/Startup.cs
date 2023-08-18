@@ -20,8 +20,6 @@ namespace Chat.WebApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-           // services.Configure<DbSetting>(Configuration.GetSection("DbSet"));
-           // services.AddSingleton<DbSetting>(sp => sp.GetRequiredService<IOptions<DbSetting>>().Value);
             services.AddApplicationLayer();
             services.AddInfrastructureLayer(Configuration);
             services.AddSwaggerGen();

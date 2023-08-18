@@ -19,7 +19,7 @@ namespace Chat.Infrastructure.Factory
         {
             _dbSetting = dbSetting;
             var client = new MongoClient(_dbSetting.ConnectionString);
-            _database = client.GetDatabase(_dbSetting.ConnectionString);
+            _database = client.GetDatabase(_dbSetting.DatabaseName);
         }
 
         public IRepository<T> CreateRepository<T>(string collectionName) where T : BaseEntity

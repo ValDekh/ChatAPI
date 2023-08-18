@@ -19,24 +19,23 @@ namespace Chat.Infrastructure.Services
     {
         private readonly IMapper _mapper;
         private readonly IRepository<TEntity> _repository;
-        private Guid _guid { get; }
+        private ObjectId _objectId { get; }
 
-        public DeleteService(IMapper mapper, IRepository<TEntity> repository, Guid guid)
+        public DeleteService(IMapper mapper, IRepository<TEntity> repository, ObjectId objectId)
         {
             _mapper = mapper;
             _repository = repository;
-            _guid = guid;
+            _objectId = objectId;
         }
 
         public async Task<bool> DeleteAsync()
         {
-            var objectId = ObjectIdGuidConverter.ConvertGuidToObjectId(_guid);
-            var entity = await _repository.GetByIdAsync(objectId);
+            var entity = await _repository.GetByIdAsync(_objectId);
             if (entity is null)
             {
                 return false;
             }
-            await _repository.DeleteAsync(objectId);
+            await _repository.DeleteAsync(_objectId);
             return true;
         }
     }

@@ -21,19 +21,17 @@ namespace Chat.Infrastructure.Services
     {
         private readonly IMapper _mapper;
         private readonly IRepository<TEntity> _repository;
-        private readonly Guid _guid;
-        public GetByIdService(IMapper mapper, IRepository<TEntity> repository, Guid guid)
+        private readonly ObjectId _objectId;
+        public GetByIdService(IMapper mapper, IRepository<TEntity> repository, ObjectId objectId)
         {
             _mapper = mapper;
             _repository = repository;
-            _guid = guid;
+            _objectId = objectId;
         }
 
         public async Task<TDTO> GetByIdAsync()
         {
-            ObjectId objectId = ObjectIdGuidConverter.ConvertGuidToObjectId(_guid);
-
-            var entity = await _repository.GetByIdAsync(objectId);
+            var entity = await _repository.GetByIdAsync(_objectId);
             var gotDTO = _mapper.Map<TDTO>(entity);
 
             return gotDTO;
