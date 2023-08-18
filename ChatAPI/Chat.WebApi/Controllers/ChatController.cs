@@ -54,7 +54,15 @@ namespace Chat.WebApi.Controllers
         {
             var createService = new CreateService<ChatEntity,ChatDTO>(_mapper, _chatService, newChatDTO);
             var chatEntity = await createService.CreateAsync();
-            return CreatedAtAction(nameof(GetByIdAsync), new { id = chatEntity.Id }, chatEntity);
+
+            if (ObjectId.TryParse((chatEntity.Id).ToString(), out _))
+            {
+                return CreatedAtAction(nameof(GetByIdAsync), new { id = chatEntity.Id }, chatEntity);
+            }
+            else
+            {
+                return BadRequest("Invalid ObjectId");
+            }
             //return Ok(chatEntity);
         }
 

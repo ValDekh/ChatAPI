@@ -7,6 +7,7 @@ using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerUI;
 using Chat.Domain.Context;
 using Chat.Infrastructure.Extensions;
+using Chat.Infrastructure.Configurations;
 
 namespace Chat.WebApi
 {
@@ -23,6 +24,10 @@ namespace Chat.WebApi
             services.AddApplicationLayer();
             services.AddInfrastructureLayer(Configuration);
             services.AddSwaggerGen();
+            services.Configure<RouteOptions>(options =>
+            {
+                options.ConstraintMap.Add("ObjectId", typeof(ObjectIdRouteConstraint));
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
