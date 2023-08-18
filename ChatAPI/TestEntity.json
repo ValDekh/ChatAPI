@@ -1,19 +1,18 @@
 {
 	"users": [
-		"64d5600e578e6e61eff83e76",
-		"64d560260644c9bd2da259c5",
-		"64d56031d47179465fc7cf49"
+		"3fa85f64-5717-4562-b3fc-2c963f66afa6",
+		"93673dcf-0389-4684-8483-bcc51c1ddb60",
+		"b5938e86-e054-4202-b46b-ce65544c588e"
 	],
 	"messages": [
 		{
-			"fromWho": "64d5600e578e6e61eff83e76",
-			"forWho": "64d560260644c9bd2da259c5",
-			"chatId": "64d5604440cd78a46ea37361",
-			"textMessage": "ZDOROVA"
+			"fromWho": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+			"forWho": "93673dcf-0389-4684-8483-bcc51c1ddb60",
+			"chatId": "b5938e86-e054-4202-b46b-ce65544c588e",
+			"textMessage": "HELLLOOOO"
 		}
 	]
 }
-
 {
 	"users": [
 		"64d5600e578e6e61eff83e76",
