@@ -11,6 +11,7 @@ namespace Chat.Application.DTOs.Chat
 {
     public class ChatDTO
     {
+        public Guid Id { get; set; }
         public List<Guid> Users { get; set; }
         public List<MessageDTO> Messages { get; set; }
     }

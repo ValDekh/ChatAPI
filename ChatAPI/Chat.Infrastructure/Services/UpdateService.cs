@@ -22,9 +22,9 @@ namespace Chat.Infrastructure.Services
         private readonly IMapper _mapper;
         private readonly IRepository<TEntity> _repository;
         private TDTO _updateDTO { get; set; }
-        private string _id { get; }
+        private Guid _id { get; }
 
-        public UpdateService(IMapper mapper, IRepository<TEntity> repository, TDTO updateDTO, string id)
+        public UpdateService(IMapper mapper, IRepository<TEntity> repository, TDTO updateDTO, Guid id)
         {
             _mapper = mapper;
             _repository = repository;
@@ -34,10 +34,11 @@ namespace Chat.Infrastructure.Services
 
         public async Task<StatusCodeResult> UpdateAsync()
         {
-            if (!ObjectId.TryParse(_id, out ObjectId objectId))
-            {
-                throw new InvalidDataException("Invalid ObjectId format.");
-            }
+            //if (!ObjectId.TryParse(_id, out ObjectId objectId))
+            //{
+            //    throw new InvalidDataException("Invalid ObjectId format.");
+            //}
+            ObjectId objectId = ObjectIdGuidConverter.ConvertGuidToObjectId(_id);
 
             var oldEntity = await _repository.GetByIdAsync(objectId);
             if (oldEntity is null)

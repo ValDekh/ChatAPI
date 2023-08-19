@@ -31,15 +31,23 @@ namespace Chat.Application.Common.Mappings
             //.ForMember(dest => dest.Messages, opt => opt.MapFrom(src => src.Messages));
 
             CreateMap<ChatEntity, ChatDTO>()
-              .ForMember(dest => dest.Users, opt => opt.MapFrom(src => src.Users.ConvertAll(u => u.ToString())))
+                .ForMember(dest => dest.Id, opt => opt
+                .MapFrom(src => ObjectIdGuidConverter.ConvertObjectIdToGuid(src.Id)))
+              .ForMember(dest => dest.Users, opt => opt
+                  .MapFrom(src => src.Users.Select(u => ObjectIdGuidConverter.ConvertObjectIdToGuid(u)).ToList()))
               .ForMember(dest => dest.Messages, opt => opt.MapFrom(src => src.Messages));
 
             CreateMap<Message, MessageDTO>()
-             .ForMember(dest => dest.FromWho, opt => opt.MapFrom(src => src.FromWho.ToString()))
-             .ForMember(dest => dest.ForWho, opt => opt.MapFrom(src => src.ForWho.ToString()))
-             .ForMember(dest => dest.ChatId, opt => opt.MapFrom(src => src.ChatId.ToString()));
+             .ForMember(dest => dest.FromWho, opt => opt.MapFrom(src =>
+                    ObjectIdGuidConverter.ConvertObjectIdToGuid(src.FromWho)))
+             .ForMember(dest => dest.ForWho, opt => opt.MapFrom(src =>
+                     ObjectIdGuidConverter.ConvertObjectIdToGuid(src.ForWho)))
+             .ForMember(dest => dest.ChatId, opt => opt.MapFrom(src =>
+                     ObjectIdGuidConverter.ConvertObjectIdToGuid(src.ChatId)));
 
             CreateMap<ChatDTO, ChatEntity>()
+                .ForMember(dest => dest.Id, opt => opt
+                .MapFrom(src => ObjectIdGuidConverter.ConvertGuidToObjectId(src.Id)))
              .ForMember(dest => dest.Users, opt => opt
                  .MapFrom(src => src.Users.Select(u => ObjectIdGuidConverter.ConvertGuidToObjectId(u)).ToList()))
              .ForMember(dest => dest.Messages, opt => opt.MapFrom(src => src.Messages));

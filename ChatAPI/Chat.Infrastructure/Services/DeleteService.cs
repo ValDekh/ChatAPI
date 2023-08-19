@@ -19,9 +19,9 @@ namespace Chat.Infrastructure.Services
     {
         private readonly IMapper _mapper;
         private readonly IRepository<TEntity> _repository;
-        private string _id { get; }
+        private Guid _id { get; }
 
-        public DeleteService(IMapper mapper, IRepository<TEntity> repository, string id)
+        public DeleteService(IMapper mapper, IRepository<TEntity> repository, Guid id)
         {
             _mapper = mapper;
             _repository = repository;
@@ -30,11 +30,11 @@ namespace Chat.Infrastructure.Services
 
         public async Task<StatusCodeResult> DeleteAsync()
         {
-            if (!ObjectId.TryParse(_id, out ObjectId objectId))
-            {
-                throw new InvalidDataException("Invalid ObjectId format.");
-            }
-
+            //if (!ObjectId.TryParse(_id, out ObjectId objectId))
+            //{
+            //    throw new InvalidDataException("Invalid ObjectId format.");
+            //}
+            ObjectId objectId = ObjectIdGuidConverter.ConvertGuidToObjectId(_id);
             var entity = await _repository.GetByIdAsync(objectId);
             if (entity is null)
             {

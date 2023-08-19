@@ -36,9 +36,9 @@ namespace Chat.WebApi.Controllers
             return Ok(gotChatDTO);
         }
 
-
-        [HttpGet("{id:length(24)}")]
-        public async Task<IActionResult> GetByIdAsync(string id)
+        
+        [HttpGet("{id:Guid}")]
+        public async Task<IActionResult> Get(Guid id)
         {
             var getByIdService = new GetByIdService<ChatEntity, ChatDTO>(_mapper, _chatService, id);
             var gotChatDTO = await getByIdService.GetByIdAsync();
@@ -54,7 +54,8 @@ namespace Chat.WebApi.Controllers
         {
             var createService = new CreateService<ChatEntity,ChatDTO>(_mapper, _chatService, newChatDTO);
             var chatEntity = await createService.CreateAsync();
-            return CreatedAtAction(nameof(GetByIdAsync), new { id = chatEntity.Id.ToString() }, chatEntity);
+            newChatDTO = createService.backConvertedDTO();
+           return CreatedAtAction(nameof(Get), new { id = newChatDTO.Id }, newChatDTO);
             //if (ObjectId.TryParse((chatEntity.Id).ToString(), out _))
             //{
             //    return CreatedAtAction(nameof(GetByIdAsync), new { id = chatEntity.Id.ToString() }, chatEntity);
@@ -63,12 +64,12 @@ namespace Chat.WebApi.Controllers
             //{
             //    return BadRequest("Invalid ObjectId");
             //}
-            //return Ok(chatEntity);
+           // return Ok(chatEntity);
         }
 
 
-        [HttpPut("{chatId:length(24)}")]
-        public async Task<IActionResult> UpdateAsync([FromRoute]string chatId,[FromBody] ChatDTO updateChatDTO)
+        [HttpPut("{chatId:Guid}")]
+        public async Task<IActionResult> UpdateAsync([FromRoute]Guid chatId,[FromBody] ChatDTO updateChatDTO)
         {
             var updateService = new UpdateService<ChatEntity, ChatDTO>(_mapper, _chatService, updateChatDTO, chatId);
             var isUpdateSucces = await updateService.UpdateAsync();
@@ -79,8 +80,8 @@ namespace Chat.WebApi.Controllers
             return Ok();
         }
 
-        [HttpDelete("{id:length(24)}")]
-        public async Task<IActionResult> DeleteAsync(string id)
+        [HttpDelete("{id:Guid}")]
+        public async Task<IActionResult> DeleteAsync(Guid id)
         {
             var deleteService = new DeleteService<ChatEntity, ChatDTO>(_mapper, _chatService, id);
             var isDeleteSucces = await deleteService.DeleteAsync();

@@ -21,14 +21,20 @@ namespace Chat.Infrastructure.Services
         {
             _mapper= mapper;
             _repository= repository;
-            _gotDTO= gotDTO;    
+            _gotDTO= gotDTO;
         }
 
         public async Task<TEntity> CreateAsync()
         {
             var newEntity = _mapper.Map<TEntity>(_gotDTO);
             await _repository.AddAsync(newEntity);
+            _gotDTO = _mapper.Map<TDTO>(newEntity);
             return newEntity;
+        }
+
+       public TDTO backConvertedDTO()
+        {
+            return _gotDTO;
         }
     }
 }

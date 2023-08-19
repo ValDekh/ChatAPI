@@ -21,8 +21,8 @@ namespace Chat.Infrastructure.Services
     {
         private readonly IMapper _mapper;
         private readonly IRepository<TEntity> _repository;
-        private readonly string _id;
-        public GetByIdService(IMapper mapper, IRepository<TEntity> repository, string id)
+        private readonly Guid _id;
+        public GetByIdService(IMapper mapper, IRepository<TEntity> repository, Guid id)
         {
             _mapper = mapper;
             _repository = repository;
@@ -31,10 +31,11 @@ namespace Chat.Infrastructure.Services
 
         public async Task<TDTO> GetByIdAsync()
         {
-            if (!ObjectId.TryParse(_id, out ObjectId objectId))
-            {
-               throw new InvalidDataException("Invalid ObjectId format.");
-            }
+            ObjectId objectId = ObjectIdGuidConverter.ConvertGuidToObjectId(_id);
+            //if (!ObjectId.TryParse(_id, out ObjectId objectId))
+            //{
+            //   throw new InvalidDataException("Invalid ObjectId format.");
+            //}
             var entity = await _repository.GetByIdAsync(objectId);
             var gotDTO = _mapper.Map<TDTO>(entity);
 
