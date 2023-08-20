@@ -31,7 +31,7 @@ namespace Chat.WebApi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllAsync()
         {
-            var getAllService = new GetAllService<ChatEntity, ChatDTO>(_mapper, _chatService);
+            var getAllService = new ChatServices<ChatEntity,ChatDTO>(_mapper, _chatService);
             var gotChatDTO = await getAllService.GetAllAsync();
             return Ok(gotChatDTO);
         }
@@ -40,8 +40,8 @@ namespace Chat.WebApi.Controllers
         [HttpGet("{id:Guid}")]
         public async Task<IActionResult> Get(Guid id)
         {
-            var getByIdService = new GetByIdService<ChatEntity, ChatDTO>(_mapper, _chatService, id);
-            var gotChatDTO = await getByIdService.GetByIdAsync();
+            var getByIdService = new ChatServices<ChatEntity, ChatDTO>(_mapper, _chatService);
+            var gotChatDTO = await getByIdService.GetByIdAsync(id);
             if (gotChatDTO == null)
             {
                 return NotFound();
@@ -52,9 +52,9 @@ namespace Chat.WebApi.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateAsync (ChatDTO newChatDTO)
         {
-            var createService = new CreateService<ChatEntity,ChatDTO>(_mapper, _chatService, newChatDTO);
-            var chatEntity = await createService.CreateAsync();
-            newChatDTO = createService.backConvertedDTO();
+            var createService = new ChatServices<ChatEntity, ChatDTO>(_mapper, _chatService);
+            var chatEntity = await createService.CreateAsync(newChatDTO);
+            newChatDTO = createService.ChatDTO;
            return CreatedAtAction(nameof(Get), new { id = newChatDTO.Id }, newChatDTO);
             //if (ObjectId.TryParse((chatEntity.Id).ToString(), out _))
             //{
@@ -71,8 +71,8 @@ namespace Chat.WebApi.Controllers
         [HttpPut("{chatId:Guid}")]
         public async Task<IActionResult> UpdateAsync([FromRoute]Guid chatId,[FromBody] ChatDTO updateChatDTO)
         {
-            var updateService = new UpdateService<ChatEntity, ChatDTO>(_mapper, _chatService, updateChatDTO, chatId);
-            var isUpdateSucces = await updateService.UpdateAsync();
+            var updateService = new ChatServices<ChatEntity, ChatDTO>(_mapper, _chatService);
+            var isUpdateSucces = await updateService.UpdateAsync(updateChatDTO, chatId);
             //if (!isUpdateSucces)
             //{
             //    return NotFound();
@@ -83,8 +83,8 @@ namespace Chat.WebApi.Controllers
         [HttpDelete("{id:Guid}")]
         public async Task<IActionResult> DeleteAsync(Guid id)
         {
-            var deleteService = new DeleteService<ChatEntity, ChatDTO>(_mapper, _chatService, id);
-            var isDeleteSucces = await deleteService.DeleteAsync();
+            var deleteService = new ChatServices<ChatEntity, ChatDTO>(_mapper, _chatService);
+            var isDeleteSucces = await deleteService.DeleteAsync(id);
             
             return NoContent();
         }

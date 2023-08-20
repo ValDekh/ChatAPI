@@ -41,15 +41,7 @@ namespace Chat.Infrastructure.Extensions
 
         private static void AddServices(this IServiceCollection services)
         {
-            services
-                .AddTransient(typeof(IGetAllService<,>), typeof(GetAllService<,>))
-                .AddTransient(typeof(IGetByIdService<,>), typeof(GetByIdService<,>))
-                .AddTransient(typeof(ICreateService<,>), typeof(CreateService<,>))
-                .AddTransient(typeof(IUpdateService<,>), typeof(UpdateService<,>))
-                .AddTransient(typeof(IDeleteService<,>), typeof(DeleteService<,>));
+            services.AddTransient(typeof(IChatServices<,>), typeof(ChatServices<,>));
         }
-
-
-
     }
 }
