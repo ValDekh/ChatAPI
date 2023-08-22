@@ -14,10 +14,10 @@ namespace Chat.Application.Services.Interfaces
     public interface IChatServices<TEntity,TDTO>
     {
         Task<TEntity> CreateAsync(TDTO gotDTO);
-        Task<StatusCodeResult> DeleteAsync(Guid id);
+        Task DeleteAsync(Guid id);
         Task<IEnumerable<TDTO>> GetAllAsync();
         Task<TDTO> GetByIdAsync(Guid id);
-        Task<StatusCodeResult> UpdateAsync(TDTO updateDTO, Guid id);
+        Task UpdateAsync(TDTO updateDTO, Guid id);
     }
 }
 

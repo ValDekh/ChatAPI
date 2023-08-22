@@ -7,6 +7,7 @@ using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore.SwaggerUI;
 using Chat.Domain.Context;
 using Chat.Infrastructure.Extensions;
+using Chat.WebApi.Middlewares;
 
 namespace Chat.WebApi
 {
@@ -23,7 +24,8 @@ namespace Chat.WebApi
             services.AddApplicationLayer();
             services.AddInfrastructureLayer(Configuration);
             services.AddSwaggerGen();
-          }
+            services.AddTransient<ExceptionHandlingMiddleware>();
+        }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
@@ -32,7 +34,7 @@ namespace Chat.WebApi
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Chat API"));
             }
-
+            app.UseMiddleware<ExceptionHandlingMiddleware>();
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthorization();

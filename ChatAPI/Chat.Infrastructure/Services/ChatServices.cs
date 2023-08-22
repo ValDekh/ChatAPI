@@ -3,6 +3,7 @@ using Chat.Application.DTOs.Chat;
 using Chat.Application.Services.Converters;
 using Chat.Application.Services.Interfaces;
 using Chat.Domain.Entities;
+using Chat.Domain.Exceptions;
 using Chat.Domain.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
@@ -21,7 +22,7 @@ namespace Chat.Infrastructure.Services
     {
         private readonly IMapper _mapper;
         private readonly IRepository<TEntity> _repository;
-        public TDTO ChatDTO { get; set; }
+        public TDTO _TDTO { get; set; }
         public ChatServices(IMapper mapper, IRepository<TEntity> repository)
         {
             _mapper = mapper;
@@ -31,25 +32,25 @@ namespace Chat.Infrastructure.Services
         {
             var newEntity = _mapper.Map<TEntity>(gotDTO);
             await _repository.AddAsync(newEntity);
-            ChatDTO = _mapper.Map<TDTO>(newEntity);
+            _TDTO = _mapper.Map<TDTO>(newEntity);
             return newEntity;
         }
 
 
-        public async Task<StatusCodeResult> DeleteAsync(Guid id)
+        public async Task DeleteAsync(Guid id)
         {
-                //if (!ObjectId.TryParse(_id, out ObjectId objectId))
-                //{
-                //    throw new InvalidDataException("Invalid ObjectId format.");
-                //}
-                ObjectId objectId = ObjectIdGuidConverter.ConvertGuidToObjectId(id);
-                var entity = await _repository.GetByIdAsync(objectId);
-                if (entity is null)
-                {
-                    return new NotFoundResult(); ;
-                }
-                await _repository.DeleteAsync(objectId);
-                return new NoContentResult();
+
+            ObjectId objectId = ObjectIdGuidConverter.ConvertGuidToObjectId(id);
+            if (!ObjectId.TryParse(objectId.ToString(), out _))
+            {
+                throw new InvalidDataException("Invalid format.");
+            }
+            var entity = await _repository.GetByIdAsync(objectId);
+            if (entity is null)
+            {
+                throw new ChatNotFoundException(id);
+            }
+            await _repository.DeleteAsync(objectId);
         }
 
         public async Task<IEnumerable<TDTO>> GetAllAsync()
@@ -62,28 +63,34 @@ namespace Chat.Infrastructure.Services
         public async Task<TDTO> GetByIdAsync(Guid id)
         {
             ObjectId objectId = ObjectIdGuidConverter.ConvertGuidToObjectId(id);
-            //if (!ObjectId.TryParse(_id, out ObjectId objectId))
-            //{
-            //   throw new InvalidDataException("Invalid ObjectId format.");
-            //}
+            if (!ObjectId.TryParse(objectId.ToString(), out _))
+            {
+                throw new InvalidDataException("Invalid format.");
+            }
             var entity = await _repository.GetByIdAsync(objectId);
+            if (entity is null)
+                {
+                    throw new ChatNotFoundException(id);
+                }
             var gotDTO = _mapper.Map<TDTO>(entity);
             return gotDTO;
         }
 
-        public async Task<StatusCodeResult> UpdateAsync(TDTO updateDTO, Guid id)
+        public async Task UpdateAsync(TDTO updateDTO, Guid id)
         {
             ObjectId objectId = ObjectIdGuidConverter.ConvertGuidToObjectId(id);
-
+            if (!ObjectId.TryParse(objectId.ToString(), out _))
+                {
+                    throw new InvalidDataException("Invalid format.");
+                }
             var oldEntity = await _repository.GetByIdAsync(objectId);
             if (oldEntity is null)
-            {
-                return new NotFoundResult();
-            }
+                {
+                    throw new ChatNotFoundException(id);
+                }
             var updateEntity = _mapper.Map<TEntity>(updateDTO);
             updateEntity.Id = oldEntity.Id;
             await _repository.UpdateAsync(objectId, updateEntity);
-            return new OkResult();
         }
     }
 }

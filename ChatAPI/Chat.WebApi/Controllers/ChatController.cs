@@ -42,11 +42,7 @@ namespace Chat.WebApi.Controllers
         {
             var getByIdService = new ChatServices<ChatEntity, ChatDTO>(_mapper, _chatService);
             var gotChatDTO = await getByIdService.GetByIdAsync(id);
-            if (gotChatDTO == null)
-            {
-                return NotFound();
-            }
-            return Ok(gotChatDTO);
+           return Ok(gotChatDTO);
         }
 
         [HttpPost]
@@ -54,17 +50,8 @@ namespace Chat.WebApi.Controllers
         {
             var createService = new ChatServices<ChatEntity, ChatDTO>(_mapper, _chatService);
             var chatEntity = await createService.CreateAsync(newChatDTO);
-            newChatDTO = createService.ChatDTO;
+            newChatDTO = createService._TDTO;
            return CreatedAtAction(nameof(Get), new { id = newChatDTO.Id }, newChatDTO);
-            //if (ObjectId.TryParse((chatEntity.Id).ToString(), out _))
-            //{
-            //    return CreatedAtAction(nameof(GetByIdAsync), new { id = chatEntity.Id.ToString() }, chatEntity);
-            //}
-            //else
-            //{
-            //    return BadRequest("Invalid ObjectId");
-            //}
-           // return Ok(chatEntity);
         }
 
 
@@ -72,11 +59,7 @@ namespace Chat.WebApi.Controllers
         public async Task<IActionResult> UpdateAsync([FromRoute]Guid chatId,[FromBody] ChatDTO updateChatDTO)
         {
             var updateService = new ChatServices<ChatEntity, ChatDTO>(_mapper, _chatService);
-            var isUpdateSucces = await updateService.UpdateAsync(updateChatDTO, chatId);
-            //if (!isUpdateSucces)
-            //{
-            //    return NotFound();
-            //}
+            await updateService.UpdateAsync(updateChatDTO, chatId);
             return Ok();
         }
 
@@ -84,8 +67,7 @@ namespace Chat.WebApi.Controllers
         public async Task<IActionResult> DeleteAsync(Guid id)
         {
             var deleteService = new ChatServices<ChatEntity, ChatDTO>(_mapper, _chatService);
-            var isDeleteSucces = await deleteService.DeleteAsync(id);
-            
+            await deleteService.DeleteAsync(id);
             return NoContent();
         }
     }
