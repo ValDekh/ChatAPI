@@ -29,12 +29,12 @@ namespace Chat.WebApi
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            if (env.IsDevelopment())
+            {
+                app.UseSwagger();
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Chat API"));
+            }
             app.UseMiddleware<ExceptionHandlingMiddleware>();
-            //if (env.IsDevelopment())
-            //{
-            //    app.UseSwagger();
-            //    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Chat API"));
-            //}
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthorization();
