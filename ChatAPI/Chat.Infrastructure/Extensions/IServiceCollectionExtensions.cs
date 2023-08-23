@@ -23,7 +23,7 @@ namespace Chat.Infrastructure.Extensions
         public static void AddInfrastructureLayer(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddDbContext(configuration);
-            services.AddMongoClient(configuration);
+            services.AddMongoClient();
             services.AddMongoRepositoryFactory();
             services.AddRepositories();
             services.AddServices();
@@ -36,11 +36,12 @@ namespace Chat.Infrastructure.Extensions
             services.AddSingleton<DbSetting>(sp => sp.GetRequiredService<IOptions<DbSetting>>().Value);
         }
 
-        private static IServiceCollection AddMongoClient(this IServiceCollection services, IConfiguration configuration)
+        private static IServiceCollection AddMongoClient(this IServiceCollection services)
         {
             services.AddSingleton<IMongoClient>(provider =>
             {
-                var client = new MongoClient(configuration.GetConnectionString("DbSet:ConnectionString"));
+                var dbSetting = provider.GetService<DbSetting>();
+                var client = new MongoClient(dbSetting.ConnectionString);
                 return client;
             });
 
