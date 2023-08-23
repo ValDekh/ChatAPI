@@ -2,12 +2,14 @@
 using Chat.Domain.Context;
 using Chat.Domain.Entities;
 using Chat.Domain.Interfaces;
+using Chat.Infrastructure.Factory;
 using Chat.Infrastructure.Repositories;
 using Chat.Infrastructure.Services;
 using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +23,8 @@ namespace Chat.Infrastructure.Extensions
         public static void AddInfrastructureLayer(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddDbContext(configuration);
+            services.AddMongoClient(configuration);
+            services.AddMongoRepositoryFactory();
             services.AddRepositories();
             services.AddServices();
         }
@@ -31,7 +35,17 @@ namespace Chat.Infrastructure.Extensions
             services.Configure<DbSetting>(options => configuration.GetSection("DbSet").Bind(options));
             services.AddSingleton<DbSetting>(sp => sp.GetRequiredService<IOptions<DbSetting>>().Value);
         }
-    
+
+        private static IServiceCollection AddMongoClient(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddSingleton<IMongoClient>(provider =>
+            {
+                var client = new MongoClient(configuration.GetConnectionString("DbSet:ConnectionString"));
+                return client;
+            });
+
+            return services;
+        }
 
         private static void AddRepositories(this IServiceCollection services)
         {
@@ -39,9 +53,14 @@ namespace Chat.Infrastructure.Extensions
                 .AddTransient(typeof(IRepository<>), typeof(Repository<>));
         }
 
+        private static void AddMongoRepositoryFactory(this IServiceCollection services)
+        {
+            services.AddScoped<IMongoRepositoryFactory,MongoRepositoryFactory>();
+        }
+
         private static void AddServices(this IServiceCollection services)
         {
-            services.AddTransient(typeof(IChatServices<,>), typeof(ChatServices<,>));
+            services.AddScoped<IChatServices,ChatService>();
         }
     }
 }

@@ -11,13 +11,14 @@ using System.Threading.Tasks;
 
 namespace Chat.Application.Services.Interfaces
 {
-    public interface IChatServices<TEntity,TDTO>
+    public interface IChatServices
     {
-        Task<TEntity> CreateAsync(TDTO gotDTO);
+        public ChatDTO ChatDTO { get; set; }
+        Task<ChatEntity> CreateAsync(ChatDTO gotDTO);
         Task DeleteAsync(Guid id);
-        Task<IEnumerable<TDTO>> GetAllAsync();
-        Task<TDTO> GetByIdAsync(Guid id);
-        Task UpdateAsync(TDTO updateDTO, Guid id);
+        Task<IEnumerable<ChatDTO>> GetAllAsync();
+        Task<ChatDTO> GetByIdAsync(Guid id);
+        Task UpdateAsync(ChatDTO updateDTO, Guid id);
     }
 }
 

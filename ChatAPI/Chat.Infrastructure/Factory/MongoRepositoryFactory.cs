@@ -1,4 +1,5 @@
-﻿using Chat.Domain.Context;
+﻿using Chat.Application.Services.Interfaces;
+using Chat.Domain.Context;
 using Chat.Domain.Entities;
 using Chat.Domain.Interfaces;
 using Chat.Infrastructure.Repositories;
@@ -11,15 +12,16 @@ using System.Threading.Tasks;
 
 namespace Chat.Infrastructure.Factory
 {
-    public class MongoRepositoryFactory
+    public class MongoRepositoryFactory : IMongoRepositoryFactory
     {
-        public DbSetting _dbSetting { get; }
+        private DbSetting _dbSetting { get; }
+        private readonly IMongoClient _mongoClient;
         private readonly IMongoDatabase _database;
-        public MongoRepositoryFactory(DbSetting dbSetting)
+        public MongoRepositoryFactory(DbSetting dbSetting, IMongoClient mongoClient)
         {
             _dbSetting = dbSetting;
-            var client = new MongoClient(_dbSetting.ConnectionString);
-            _database = client.GetDatabase(_dbSetting.DatabaseName);
+            _mongoClient = mongoClient;
+            _database = _mongoClient.GetDatabase(_dbSetting.DatabaseName);
         }
 
         public IRepository<T> CreateRepository<T>(string collectionName) where T : BaseEntity

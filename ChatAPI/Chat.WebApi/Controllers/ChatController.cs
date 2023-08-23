@@ -11,6 +11,7 @@ using Chat.Application.DTOs.Chat;
 using Chat.Infrastructure.Factory;
 using Chat.Infrastructure.Services;
 using Chat.Domain.Context;
+using Chat.Application.Services.Interfaces;
 
 namespace Chat.WebApi.Controllers
 {
@@ -19,55 +20,48 @@ namespace Chat.WebApi.Controllers
     public class ChatController : ControllerBase
     {
 
-        private readonly IRepository<ChatEntity> _chatService;
-        private readonly IMapper _mapper;
+        private readonly IChatServices _chatServices;
 
-        public ChatController(DbSetting dbSetting, IMapper mapper)
+        public ChatController(IChatServices chatServices)
         {
-            _chatService = new MongoRepositoryFactory(dbSetting).CreateRepository<ChatEntity>("chatCollection");
-            _mapper = mapper;
+            _chatServices = chatServices;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAllAsync()
         {
-            var getAllService = new ChatServices<ChatEntity,ChatDTO>(_mapper, _chatService);
-            var gotChatDTO = await getAllService.GetAllAsync();
+            var gotChatDTO = await _chatServices.GetAllAsync();
             return Ok(gotChatDTO);
         }
 
-        
+
         [HttpGet("{id:Guid}")]
         public async Task<IActionResult> Get(Guid id)
         {
-            var getByIdService = new ChatServices<ChatEntity, ChatDTO>(_mapper, _chatService);
-            var gotChatDTO = await getByIdService.GetByIdAsync(id);
-           return Ok(gotChatDTO);
+            var gotChatDTO = await _chatServices.GetByIdAsync(id);
+            return Ok(gotChatDTO);
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAsync (ChatDTO newChatDTO)
+        public async Task<IActionResult> CreateAsync(ChatDTO newChatDTO)
         {
-            var createService = new ChatServices<ChatEntity, ChatDTO>(_mapper, _chatService);
-            var chatEntity = await createService.CreateAsync(newChatDTO);
-            newChatDTO = createService._TDTO;
-           return CreatedAtAction(nameof(Get), new { id = newChatDTO.Id }, newChatDTO);
+            var chatEntity = await _chatServices.CreateAsync(newChatDTO);
+            newChatDTO = _chatServices.ChatDTO;
+            return CreatedAtAction(nameof(Get), new { id = newChatDTO.Id }, newChatDTO);
         }
 
 
         [HttpPut("{chatId:Guid}")]
-        public async Task<IActionResult> UpdateAsync([FromRoute]Guid chatId,[FromBody] ChatDTO updateChatDTO)
+        public async Task<IActionResult> UpdateAsync([FromRoute] Guid chatId, [FromBody] ChatDTO updateChatDTO)
         {
-            var updateService = new ChatServices<ChatEntity, ChatDTO>(_mapper, _chatService);
-            await updateService.UpdateAsync(updateChatDTO, chatId);
+            await _chatServices.UpdateAsync(updateChatDTO, chatId);
             return Ok();
         }
 
         [HttpDelete("{id:Guid}")]
         public async Task<IActionResult> DeleteAsync(Guid id)
         {
-            var deleteService = new ChatServices<ChatEntity, ChatDTO>(_mapper, _chatService);
-            await deleteService.DeleteAsync(id);
+            await _chatServices.DeleteAsync(id);
             return NoContent();
         }
     }
