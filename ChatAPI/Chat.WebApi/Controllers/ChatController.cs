@@ -20,9 +20,9 @@ namespace Chat.WebApi.Controllers
     public class ChatController : ControllerBase
     {
 
-        private readonly IChatServices _chatServices;
+        private readonly IChatService _chatServices;
 
-        public ChatController(IChatServices chatServices)
+        public ChatController(IChatService chatServices)
         {
             _chatServices = chatServices;
         }

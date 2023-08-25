@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Chat.Application.Services.Interfaces
 {
-    public interface IChatServices
+    public interface IChatService
     {
         public ChatDTO ChatDTO { get; set; }
         Task<ChatEntity> CreateAsync(ChatDTO gotDTO);

@@ -61,7 +61,8 @@ namespace Chat.Infrastructure.Extensions
 
         private static void AddServices(this IServiceCollection services)
         {
-            services.AddScoped<IChatServices,ChatService>();
+            services.AddScoped<IChatService,ChatService>();
+            services.AddScoped<IMessageService,MessageService>(); 
         }
     }
 }

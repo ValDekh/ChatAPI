@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Chat.Domain.Entities
 {
-    public class Message: BaseEntity
+    public class MessageEntity: BaseEntity
     {
         public ObjectId SenderId { get; set; }
         public ObjectId ReceiverId { get; set; }

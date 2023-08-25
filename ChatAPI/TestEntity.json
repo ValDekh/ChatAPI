@@ -47,5 +47,15 @@
 			}
 		]
 	}
+
+	{
+		"id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+		"senderId": "93673dcf-0389-4684-8483-bcc51c1ddb60",
+		"receiverId": "b5938e86-e054-4202-b46b-ce65544c588e",
+		"chatId": "98276361-7dd3-4b84-9c46-3190219537f0",
+		"textMessage": "This is new messages",
+		"trackUrl": "track.music.com.ua"
+	}
+
 }
 
