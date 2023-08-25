@@ -11,12 +11,9 @@ namespace Chat.Domain.Entities
     public class Message: BaseEntity
     {
         public ObjectId SenderId { get; set; }
-        public ObjectId RecieverId { get; set; }
+        public ObjectId ReceiverId { get; set; }
         public ObjectId ChatId { get; set; }
-
         public string TextMessage { get; set; }
-
-        //TODO Change MessageDTO
-        //TODO Track url
+        public string TrackUrl { get; set; }
     }
 }
