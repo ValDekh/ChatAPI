@@ -10,10 +10,13 @@ namespace Chat.Domain.Entities
 {
     public class Message: BaseEntity
     {
-        public ObjectId FromWho { get; set; }
-        public ObjectId ForWho { get; set; }
+        public ObjectId SenderId { get; set; }
+        public ObjectId RecieverId { get; set; }
         public ObjectId ChatId { get; set; }
 
         public string TextMessage { get; set; }
+
+        //TODO Change MessageDTO
+        //TODO Track url
     }
 }
