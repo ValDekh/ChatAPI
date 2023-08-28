@@ -14,7 +14,7 @@ namespace Chat.Application.DTOs.Message
         public Guid SenderId { get; set; }
         public Guid ReceiverId { get; set; }
         public Guid ChatId { get; set; }
-        public string TextMessage { get; set; }
+        public string Text { get; set; }
         public string TrackUrl { get; set; }
     }
 }

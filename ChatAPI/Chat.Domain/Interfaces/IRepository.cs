@@ -8,13 +8,17 @@ using System.Threading.Tasks;
 
 namespace Chat.Domain.Interfaces
 {
-    public interface IRepository<T>
-        where T : BaseEntity
+    public interface IRepository<TEntity>
+        where TEntity : BaseEntity
     {
-        Task<List<T>> GetAllAsync();
-        Task<T?> GetByIdAsync(ObjectId id);
-        Task AddAsync(T entity);
-        Task UpdateAsync(ObjectId id, T entity);
+        Task<List<TEntity>> GetAllAsync();
+
+        Task<TEntity?> GetByIdAsync(ObjectId id);
+
+        Task AddAsync(TEntity entity);
+
+        Task UpdateAsync(ObjectId id, TEntity entity);
+
         Task DeleteAsync(ObjectId id);
     }
 }

@@ -8,8 +8,8 @@ namespace Chat.Domain.Exceptions
 {
     public sealed class MessageNotFoundException : NotFoundException
     {
-        public MessageNotFoundException(Guid message) 
-            : base($"The message with the identifier {message} was not found.")
+        public MessageNotFoundException(Guid messageId) 
+            : base($"The message with the identifier {messageId} was not found.")
         {
         }
     }

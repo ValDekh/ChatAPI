@@ -8,8 +8,8 @@ namespace Chat.Domain.Exceptions
 {
     public sealed class ChatNotFoundException : NotFoundException
     {
-        public ChatNotFoundException(Guid ownerId)
-            : base($"The chat with the identifier {ownerId} was not found.")
+        public ChatNotFoundException(Guid chatId)
+            : base($"The chat with the identifier {chatId} was not found.")
         {
         }
     }

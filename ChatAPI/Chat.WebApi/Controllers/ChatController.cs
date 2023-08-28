@@ -36,7 +36,7 @@ namespace Chat.WebApi.Controllers
 
 
         [HttpGet("{id:Guid}")]
-        public async Task<IActionResult> Get(Guid id)
+        public async Task<IActionResult> GetAsync(Guid id)
         {
             var gotChatDTO = await _chatServices.GetByIdAsync(id);
             return Ok(gotChatDTO);
@@ -47,7 +47,7 @@ namespace Chat.WebApi.Controllers
         {
             var chatEntity = await _chatServices.CreateAsync(newChatDTO);
             newChatDTO = _chatServices.ChatDTO;
-            return CreatedAtAction(nameof(Get), new { id = newChatDTO.Id }, newChatDTO);
+            return CreatedAtAction(nameof(GetAsync), new { id = newChatDTO.Id }, newChatDTO);
         }
 
 

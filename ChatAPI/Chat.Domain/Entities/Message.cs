@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace Chat.Domain.Entities
 {
-    public class MessageEntity: BaseEntity
+    public class Message: BaseEntity
     {
         public ObjectId SenderId { get; set; }
         public ObjectId ReceiverId { get; set; }
         public ObjectId ChatId { get; set; }
-        public string TextMessage { get; set; }
+        public string Text { get; set; }
         public string TrackUrl { get; set; }
     }
 }

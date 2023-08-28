@@ -23,7 +23,7 @@ namespace Chat.Application.Common.Mappings
                   .MapFrom(src => src.Users.Select(u => ObjectIdGuidConverter.ConvertObjectIdToGuid(u)).ToList()))
               .ForMember(dest => dest.Messages, opt => opt.MapFrom(src => src.Messages));
 
-            CreateMap<MessageEntity, MessageDTO>()
+            CreateMap<Message, MessageDTO>()
                 .ForMember(dest => dest.Id, opt => opt
                 .MapFrom(src => ObjectIdGuidConverter.ConvertObjectIdToGuid(src.Id)))
              .ForMember(dest => dest.SenderId, opt => opt.MapFrom(src =>
@@ -40,7 +40,7 @@ namespace Chat.Application.Common.Mappings
                  .MapFrom(src => src.Users.Select(u => ObjectIdGuidConverter.ConvertGuidToObjectId(u)).ToList()))
              .ForMember(dest => dest.Messages, opt => opt.MapFrom(src => src.Messages));
 
-            CreateMap<MessageDTO, MessageEntity>()
+            CreateMap<MessageDTO, Message>()
                 .ForMember(dest => dest.Id, opt => opt
                 .MapFrom(src => ObjectIdGuidConverter.ConvertGuidToObjectId(src.Id)))
              .ForMember(dest => dest.SenderId, opt => opt.MapFrom(src =>

@@ -19,20 +19,20 @@ namespace Chat.Infrastructure.Services
 
     {
         private readonly IMapper _mapper;
-        private readonly IRepository<MessageEntity> _repository;
+        private readonly IRepository<Message> _repository;
         private readonly IMongoRepositoryFactory _mongoRepositoryFactory;
         public MessageDTO MessageDTO { get; set; }
         public MessageService(IMapper mapper, IMongoRepositoryFactory mongoRepositoryFactory)
         {
             _mapper = mapper;
             _mongoRepositoryFactory = mongoRepositoryFactory;
-            _repository = _mongoRepositoryFactory.CreateRepository<MessageEntity>("messageCollection");
+            _repository = _mongoRepositoryFactory.CreateRepository<Message>("messageCollection");
         }
 
 
-        public async Task<MessageEntity> CreateAsync(MessageDTO gotDTO)
+        public async Task<Message> CreateAsync(MessageDTO gotDTO)
         {
-            var newEntity = _mapper.Map<MessageEntity>(gotDTO);
+            var newEntity = _mapper.Map<Message>(gotDTO);
             await _repository.AddAsync(newEntity);
             MessageDTO = _mapper.Map<MessageDTO>(newEntity);
             return newEntity;
@@ -90,7 +90,7 @@ namespace Chat.Infrastructure.Services
             {
                 throw new MessageNotFoundException(id);
             }
-            var updateEntity = _mapper.Map<MessageEntity>(updateDTO);
+            var updateEntity = _mapper.Map<Message>(updateDTO);
             updateEntity.Id = oldEntity.Id;
             await _repository.UpdateAsync(objectId, updateEntity);
         }
