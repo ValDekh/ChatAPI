@@ -6,31 +6,31 @@ using MongoDB.Driver;
 
 namespace Chat.Infrastructure.Repositories
 {
-    public class Repository<T> : IRepository<T>
-        where T : BaseEntity
+    public class Repository<TEntity> : IRepository<TEntity>
+        where TEntity : BaseEntity
     {
-        private readonly IMongoCollection<T> _entityCollection;
-        public Repository(IMongoCollection<T> entityCollection)
+        private readonly IMongoCollection<TEntity> _entityCollection;
+        public Repository(IMongoCollection<TEntity> entityCollection)
         {
             _entityCollection = entityCollection;
         }
 
-        public async Task<List<T>> GetAllAsync()
+        public async Task<List<TEntity>> GetAllAsync()
         {
             return await _entityCollection.Find(_ => true).ToListAsync();
         }
 
-        public async Task<T?> GetByIdAsync(ObjectId id)
+        public async Task<TEntity?> GetByIdAsync(ObjectId id)
         {
             return await _entityCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
         }
 
-        public async Task AddAsync(T entity)
+        public async Task AddAsync(TEntity entity)
         {
             await _entityCollection.InsertOneAsync(entity);
         }
 
-        public async Task UpdateAsync(ObjectId id, T entity)
+        public async Task UpdateAsync(ObjectId id, TEntity entity)
         {
             await _entityCollection.ReplaceOneAsync(x => x.Id == id, entity);
         }
