@@ -17,12 +17,14 @@ namespace Chat.Infrastructure.Repositories
 
         public async Task<List<TEntity>> GetAllAsync()
         {
-            return await _entityCollection.Find(_ => true).ToListAsync();
+            var filter = Builders<TEntity>.Filter.Empty;
+            return await _entityCollection.Find(filter).ToListAsync();
         }
 
         public async Task<TEntity?> GetByIdAsync(ObjectId id)
         {
-            return await _entityCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
+            var filter = Builders<TEntity>.Filter.Eq(x => x.Id, id);
+            return await _entityCollection.Find(filter).FirstOrDefaultAsync();
         }
 
         public async Task AddAsync(TEntity entity)
@@ -32,7 +34,8 @@ namespace Chat.Infrastructure.Repositories
 
         public async Task UpdateAsync(ObjectId id, TEntity entity)
         {
-            await _entityCollection.ReplaceOneAsync(x => x.Id == id, entity);
+            var filter = Builders<TEntity>.Filter.Eq(x => x.Id, id);
+            await _entityCollection.ReplaceOneAsync(filter, entity);
         }
 
         public async Task DeleteAsync(ObjectId id)

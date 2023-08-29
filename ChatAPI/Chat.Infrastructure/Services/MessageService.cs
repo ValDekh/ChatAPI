@@ -27,6 +27,7 @@ namespace Chat.Infrastructure.Services
             _mapper = mapper;
             _mongoRepositoryFactory = mongoRepositoryFactory;
             _repository = _mongoRepositoryFactory.CreateRepository<Message>("messageCollection");
+            // Get ChatColletction through chatService and then take chat by ChatId, which I get through MessageController rought
         }
 
 

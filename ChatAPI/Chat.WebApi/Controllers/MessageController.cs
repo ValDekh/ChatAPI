@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Chat.WebApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/chats/{chatId:Guid}/messages")]
     [ApiController]
     public class MessageController : ControllerBase
     {
@@ -17,40 +17,40 @@ namespace Chat.WebApi.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllAsync()
+        public async Task<IActionResult> GetAllAsync(Guid chatId)
         {
-            var gotMessageDTO = await _messageService.GetAllAsync();
+            var gotMessageDTO = await _messageService.GetAllAsync(chatId);
             return Ok(gotMessageDTO);
         }
 
         [ActionName("GetByIdAsync")]
         [HttpGet("{id:Guid}")]
-        public async Task<IActionResult> GetByIdAsync(Guid id)
+        public async Task<IActionResult> GetByIdAsync(Guid chatId, Guid id)
         {
-            var gotMessageDTO = await _messageService.GetByIdAsync(id);
+            var gotMessageDTO = await _messageService.GetByIdAsync(chatId,id);
             return Ok(gotMessageDTO);
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAsync(MessageDTO newMessageDTO)
+        public async Task<IActionResult> CreateAsync(Guid chatId,MessageDTO newMessageDTO)
         {
-            var chatEntity = await _messageService.CreateAsync(newMessageDTO);
+            var chatEntity = await _messageService.CreateAsync(chatId, newMessageDTO);
             newMessageDTO = _messageService.MessageDTO;
             return CreatedAtAction(nameof(GetByIdAsync), new { id = newMessageDTO.Id }, newMessageDTO);
         }
 
 
-        [HttpPut("{chatId:Guid}")]
-        public async Task<IActionResult> UpdateAsync([FromRoute] Guid chatId, [FromBody] MessageDTO updateMessageDTO)
+        [HttpPut("{id:Guid}")]
+        public async Task<IActionResult> UpdateAsync([FromRoute] Guid chatId, Guid id, [FromBody] MessageDTO updateMessageDTO)
         {
-            await _messageService.UpdateAsync(updateMessageDTO, chatId);
+            await _messageService.UpdateAsync(chatId,updateMessageDTO, id);
             return Ok();
         }
 
         [HttpDelete("{id:Guid}")]
-        public async Task<IActionResult> DeleteAsync(Guid id)
+        public async Task<IActionResult> DeleteAsync(Guid chatId,Guid id)
         {
-            await _messageService.DeleteAsync(id);
+            await _messageService.DeleteAsync(chatId,id);
             return NoContent();
         }
 

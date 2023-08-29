@@ -12,10 +12,10 @@ namespace Chat.Application.Services.Interfaces
     public interface IMessageService
     {
         public MessageDTO MessageDTO { get; set; }
-        Task<Message> CreateAsync(MessageDTO gotDTO);
-        Task DeleteAsync(Guid id);
-        Task<IEnumerable<MessageDTO>> GetAllAsync();
-        Task<MessageDTO> GetByIdAsync(Guid id);
-        Task UpdateAsync(MessageDTO updateDTO, Guid id);
+        Task<Message> CreateAsync(Guid chatId, MessageDTO gotDTO);
+        Task DeleteAsync(Guid chatId, Guid id);
+        Task<IEnumerable<MessageDTO>> GetAllAsync(Guid chatId);
+        Task<MessageDTO> GetByIdAsync(Guid chatId, Guid id);
+        Task UpdateAsync(Guid chatId,MessageDTO updateDTO, Guid id);
     }
 }
