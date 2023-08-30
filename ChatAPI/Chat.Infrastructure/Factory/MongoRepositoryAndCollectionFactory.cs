@@ -12,12 +12,12 @@ using System.Threading.Tasks;
 
 namespace Chat.Infrastructure.Factory
 {
-    public class MongoRepositoryFactory : IMongoRepositoryFactory
+    public class MongoRepositoryAndCollectionFactory : IMongoRepositoryAndCollectionFactory
     {
         private DbSetting _dbSetting { get; }
         private readonly IMongoClient _mongoClient;
         private readonly IMongoDatabase _database;
-        public MongoRepositoryFactory(DbSetting dbSetting, IMongoClient mongoClient)
+        public MongoRepositoryAndCollectionFactory(DbSetting dbSetting, IMongoClient mongoClient)
         {
             _dbSetting = dbSetting;
             _mongoClient = mongoClient;
@@ -28,6 +28,12 @@ namespace Chat.Infrastructure.Factory
         {
             var collection = _database.GetCollection<T>(collectionName);
             return new Repository<T>(collection);
+        }
+
+        public IMongoCollection<T> GetExistCollection<T>(string collectionName) where T : BaseEntity
+        {
+            var collection = _database.GetCollection<T>(collectionName);
+            return collection;
         }
     }
 }

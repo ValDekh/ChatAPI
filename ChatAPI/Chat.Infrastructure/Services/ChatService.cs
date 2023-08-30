@@ -24,9 +24,9 @@ namespace Chat.Infrastructure.Services
     {
         private readonly IMapper _mapper;
         private readonly IRepository<ChatEntity> _repository;
-        private readonly IMongoRepositoryFactory _mongoRepositoryFactory;
+        private readonly IMongoRepositoryAndCollectionFactory _mongoRepositoryFactory;
         public ChatDTO ChatDTO { get; set; }
-        public ChatService(IMapper mapper,IMongoRepositoryFactory mongoRepositoryFactory)
+        public ChatService(IMapper mapper,IMongoRepositoryAndCollectionFactory mongoRepositoryFactory)
         {
             _mapper = mapper;
             _mongoRepositoryFactory = mongoRepositoryFactory;

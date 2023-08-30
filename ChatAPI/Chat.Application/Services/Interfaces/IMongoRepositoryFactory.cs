@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Chat.Application.Services.Interfaces
 {
-    public interface IMongoRepositoryFactory
+    public interface IMongoRepositoryAndCollectionFactory
       
     {
         IRepository<TEntity> Repository<TEntity>(string collectionName) where TEntity : BaseEntity;
