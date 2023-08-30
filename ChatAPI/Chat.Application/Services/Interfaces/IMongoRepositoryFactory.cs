@@ -11,6 +11,6 @@ namespace Chat.Application.Services.Interfaces
     public interface IMongoRepositoryFactory
       
     {
-        IRepository<TEntity> CreateRepository<TEntity>(string collectionName) where TEntity : BaseEntity;
+        IRepository<TEntity> Repository<TEntity>(string collectionName) where TEntity : BaseEntity;
     }
 }

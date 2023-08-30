@@ -3,11 +3,14 @@ using Chat.Application.DTOs.Chat;
 using Chat.Application.DTOs.Message;
 using Chat.Application.Services.Converters;
 using Chat.Application.Services.Interfaces;
+using Chat.Domain.Context;
 using Chat.Domain.Entities;
 using Chat.Domain.Exceptions;
 using Chat.Domain.Interfaces;
 using MongoDB.Bson;
+using MongoDB.Driver;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,19 +24,21 @@ namespace Chat.Infrastructure.Services
         private readonly IMapper _mapper;
         private readonly IRepository<Message> _repository;
         private readonly IMongoRepositoryFactory _mongoRepositoryFactory;
+        private readonly IChatService _chatService;
         public MessageDTO MessageDTO { get; set; }
-        public MessageService(IMapper mapper, IMongoRepositoryFactory mongoRepositoryFactory)
+        public MessageService(IMapper mapper, IMongoRepositoryFactory mongoRepositoryFactory, IChatService chatService)
         {
             _mapper = mapper;
             _mongoRepositoryFactory = mongoRepositoryFactory;
-            _repository = _mongoRepositoryFactory.CreateRepository<Message>("messageCollection");
-            // Get ChatColletction through chatService and then take chat by ChatId, which I get through MessageController rought
+            _repository = _mongoRepositoryFactory.Repository<Message>("messageCollection");
+            _chatService = chatService;
         }
 
-
-        public async Task<Message> CreateAsync(MessageDTO gotDTO)
+        public async Task<Message> CreateAsync(Guid chatId, MessageDTO gotDTO)
         {
+            var chat = await ChatExist(chatId);
             var newEntity = _mapper.Map<Message>(gotDTO);
+            newEntity.ChatId = chat.Id;
             await _repository.AddAsync(newEntity);
             MessageDTO = _mapper.Map<MessageDTO>(newEntity);
             return newEntity;
@@ -95,5 +100,20 @@ namespace Chat.Infrastructure.Services
             updateEntity.Id = oldEntity.Id;
             await _repository.UpdateAsync(objectId, updateEntity);
         }
+
+
+        //private async Task<ChatEntity> ChatExist(Guid chatId)
+        //{
+        //    ObjectId chatIdEntity = ObjectIdGuidConverter.ConvertGuidToObjectId(chatId);
+        //    var collection = _database.GetCollection<ChatEntity>("chatCollection");
+        //    var filter = Builders<ChatEntity>.Filter.Eq(x => x.Id, chatIdEntity);
+        //    var chat = await collection.Find(filter).FirstOrDefaultAsync();
+        //    if (chat is null)
+        //    {
+        //        throw new ChatNotFoundException(chatId);
+        //    }
+
+        //    return chat;
+        //}
     }
 }

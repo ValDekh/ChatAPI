@@ -24,7 +24,7 @@ namespace Chat.Infrastructure.Factory
             _database = _mongoClient.GetDatabase(_dbSetting.DatabaseName);
         }
 
-        public IRepository<T> CreateRepository<T>(string collectionName) where T : BaseEntity
+        public IRepository<T> Repository<T>(string collectionName) where T : BaseEntity
         {
             var collection = _database.GetCollection<T>(collectionName);
             return new Repository<T>(collection);

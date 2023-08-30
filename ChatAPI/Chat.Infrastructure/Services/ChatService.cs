@@ -30,7 +30,7 @@ namespace Chat.Infrastructure.Services
         {
             _mapper = mapper;
             _mongoRepositoryFactory = mongoRepositoryFactory;
-            _repository = _mongoRepositoryFactory.CreateRepository<ChatEntity>("chatCollection");
+            _repository = _mongoRepositoryFactory.Repository<ChatEntity>("chatCollection");
         }
 
         

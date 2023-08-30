@@ -13,6 +13,6 @@ namespace Chat.Application.DTOs.Chat
     {
         public Guid Id { get; set; }
         public List<Guid> Users { get; set; }
-        public List<MessageDTO> Messages { get; set; }
+        public List<Guid> MessageId { get; set; }
     }
 }
