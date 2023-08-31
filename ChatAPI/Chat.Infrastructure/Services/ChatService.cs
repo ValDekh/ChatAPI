@@ -24,13 +24,17 @@ namespace Chat.Infrastructure.Services
     {
         private readonly IMapper _mapper;
         private readonly IRepository<ChatEntity> _repository;
-        private readonly IMongoRepositoryAndCollectionFactory _mongoRepositoryFactory;
+        private readonly IMongoCollection<ChatEntity> _chatCollection;
+        private readonly IMongoRepositoryAndCollectionFactory _mongoRepositoryAndCollectionFactory;
+        private readonly IMessageService _messageService;
         public ChatDTO ChatDTO { get; set; }
-        public ChatService(IMapper mapper,IMongoRepositoryAndCollectionFactory mongoRepositoryFactory)
+        public ChatService(IMapper mapper,IMongoRepositoryAndCollectionFactory mongoRepositoryFactory, IMessageService messageService)
         {
             _mapper = mapper;
-            _mongoRepositoryFactory = mongoRepositoryFactory;
-            _repository = _mongoRepositoryFactory.Repository<ChatEntity>("chatCollection");
+            _mongoRepositoryAndCollectionFactory = mongoRepositoryFactory;
+            _messageService = messageService;
+            _repository = _mongoRepositoryAndCollectionFactory.Repository<ChatEntity>("chatCollection");
+            _chatCollection = _mongoRepositoryAndCollectionFactory.GetExistCollection<ChatEntity>("chatCollection");
         }
 
         
@@ -56,6 +60,7 @@ namespace Chat.Infrastructure.Services
             {
                 throw new ChatNotFoundException(id);
             }
+            await _messageService.DeleteAllChatBelongMessages(id);
             await _repository.DeleteAsync(objectId);
         }
 
@@ -97,6 +102,26 @@ namespace Chat.Infrastructure.Services
             var updateEntity = _mapper.Map<ChatEntity>(updateDTO);
             updateEntity.Id = oldEntity.Id;
             await _repository.UpdateAsync(objectId, updateEntity);
+        }
+
+        public async Task UpdateMassageIdListAsync(Guid chatId, ObjectId messageId)
+        {
+            ObjectId id = ObjectIdGuidConverter.ConvertGuidToObjectId(chatId);
+            var listWrites = new List<WriteModel<ChatEntity>>();
+            var filterDefinition = Builders<ChatEntity>.Filter.Eq(p => p.Id, id);
+            var updateDefinition = Builders<ChatEntity>.Update.AddToSet(p => p.MessageId, messageId);
+            listWrites.Add(new UpdateOneModel<ChatEntity>(filterDefinition, updateDefinition));
+            var resultWrites = await  _chatCollection.BulkWriteAsync(listWrites);
+        }
+
+        public async Task DeleteMassageIdListAsync(Guid chatId, ObjectId messageId)
+        {
+            ObjectId id = ObjectIdGuidConverter.ConvertGuidToObjectId(chatId);
+            var listWrites = new List<WriteModel<ChatEntity>>();
+            var filterDefinition = Builders<ChatEntity>.Filter.Eq(p => p.Id, id);
+            var updateDefinition = Builders<ChatEntity>.Update.Pull(p => p.MessageId, messageId);
+            listWrites.Add(new UpdateOneModel<ChatEntity>(filterDefinition, updateDefinition));
+            var resultWrites = await _chatCollection.BulkWriteAsync(listWrites);
         }
     }
 }

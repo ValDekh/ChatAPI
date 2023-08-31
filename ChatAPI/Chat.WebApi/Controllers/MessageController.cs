@@ -36,7 +36,7 @@ namespace Chat.WebApi.Controllers
         {
             var chatEntity = await _messageService.CreateAsync(chatId, newMessageDTO);
             newMessageDTO = _messageService.MessageDTO;
-            return CreatedAtAction(nameof(GetByIdAsync), new { id = newMessageDTO.Id }, newMessageDTO);
+            return CreatedAtAction(nameof(GetByIdAsync), new { chatId, id = newMessageDTO.Id }, newMessageDTO);
         }
 
 

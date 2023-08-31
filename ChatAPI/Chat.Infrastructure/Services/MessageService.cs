@@ -23,32 +23,34 @@ namespace Chat.Infrastructure.Services
     {
         private readonly IMapper _mapper;
         private readonly IRepository<Message> _repository;
-        private readonly IMongoRepositoryAndCollectionFactory _mongoRepositoryFactory;
+        private readonly IMongoCollection<Message> _collection;
+        private readonly IMongoRepositoryAndCollectionFactory _mongoRepositoryAndCollectionFactory;
         private readonly IChatService _chatService;
         public MessageDTO MessageDTO { get; set; }
         public MessageService(IMapper mapper, IMongoRepositoryAndCollectionFactory mongoRepositoryFactory, IChatService chatService)
         {
             _mapper = mapper;
-            _mongoRepositoryFactory = mongoRepositoryFactory;
-            _repository = _mongoRepositoryFactory.Repository<Message>("messageCollection");
+            _mongoRepositoryAndCollectionFactory = mongoRepositoryFactory;
+            _repository = _mongoRepositoryAndCollectionFactory.Repository<Message>("messageCollection");
+            _collection = _mongoRepositoryAndCollectionFactory.GetExistCollection<Message>("messageCollection");
             _chatService = chatService;
         }
 
         public async Task<Message> CreateAsync(Guid chatId, MessageDTO gotDTO)
         {
-            var chat = await _chatService.GetByIdAsync(chatId);
+            await ChatExist(chatId);
             gotDTO.ChatId = chatId;
             var newEntity = _mapper.Map<Message>(gotDTO);
             await _repository.AddAsync(newEntity);
+            await _chatService.UpdateMassageIdListAsync(chatId, newEntity.Id);
             MessageDTO = _mapper.Map<MessageDTO>(newEntity);
-            chat.MessageId.Add(MessageDTO.Id);
             return newEntity;
         }
 
 
-        public async Task DeleteAsync(Guid id)
+        public async Task DeleteAsync(Guid chatId, Guid id)
         {
-
+            await ChatExist(chatId);
             ObjectId objectId = ObjectIdGuidConverter.ConvertGuidToObjectId(id);
             if (!ObjectId.TryParse(objectId.ToString(), out _))
             {
@@ -59,18 +61,22 @@ namespace Chat.Infrastructure.Services
             {
                 throw new MessageNotFoundException(id);
             }
+            await _chatService.DeleteMassageIdListAsync(chatId,objectId);
             await _repository.DeleteAsync(objectId);
         }
 
-        public async Task<IEnumerable<MessageDTO>> GetAllAsync()
+        //TODO (Create a pagination here)
+        public async Task<IEnumerable<MessageDTO>> GetAllAsync(Guid chatId)
         {
+            await ChatExist(chatId);
             var entities = await _repository.GetAllAsync();
             var gotDTO = _mapper.Map<IEnumerable<MessageDTO>>(entities);
             return gotDTO;
         }
 
-        public async Task<MessageDTO> GetByIdAsync(Guid id)
+        public async Task<MessageDTO> GetByIdAsync(Guid chatId,Guid id)
         {
+            await ChatExist(chatId);
             ObjectId objectId = ObjectIdGuidConverter.ConvertGuidToObjectId(id);
             if (!ObjectId.TryParse(objectId.ToString(), out _))
             {
@@ -85,8 +91,9 @@ namespace Chat.Infrastructure.Services
             return gotDTO;
         }
 
-        public async Task UpdateAsync(MessageDTO updateDTO, Guid id)
+        public async Task UpdateAsync(Guid chatId, MessageDTO updateDTO, Guid id)
         {
+            await ChatExist(chatId);
             ObjectId objectId = ObjectIdGuidConverter.ConvertGuidToObjectId(id);
             if (!ObjectId.TryParse(objectId.ToString(), out _))
             {
@@ -102,19 +109,23 @@ namespace Chat.Infrastructure.Services
             await _repository.UpdateAsync(objectId, updateEntity);
         }
 
+        public async Task DeleteAllChatBelongMessages(Guid chatId)
+        {
+            await ChatExist(chatId);
+            ObjectId chatIdEntity = ObjectIdGuidConverter.ConvertGuidToObjectId(chatId);
+            var listWrites = new List<WriteModel<Message>>();
+            var filterDefinition = Builders<Message>.Filter.Eq(p => p.ChatId, chatIdEntity);
+            listWrites.Add(new DeleteManyModel<Message>(filterDefinition));
+            await _collection.BulkWriteAsync(listWrites);
+        }
 
-        //private async Task<ChatEntity> ChatExist(Guid chatId)
-        //{
-        //    ObjectId chatIdEntity = ObjectIdGuidConverter.ConvertGuidToObjectId(chatId);
-        //    var collection = _database.GetCollection<ChatEntity>("chatCollection");
-        //    var filter = Builders<ChatEntity>.Filter.Eq(x => x.Id, chatIdEntity);
-        //    var chat = await collection.Find(filter).FirstOrDefaultAsync();
-        //    if (chat is null)
-        //    {
-        //        throw new ChatNotFoundException(chatId);
-        //    }
-
-        //    return chat;
-        //}
+        private async Task ChatExist(Guid chatId)
+        {
+            var chat = await _chatService.GetByIdAsync(chatId);
+            if (chat is null)
+            {
+                throw new ChatNotFoundException(chatId);
+            }
+        }
     }
 }

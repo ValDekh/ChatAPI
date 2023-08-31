@@ -1,5 +1,6 @@
 ﻿using Chat.Domain.Entities;
 using Chat.Domain.Interfaces;
+using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,5 +13,6 @@ namespace Chat.Application.Services.Interfaces
       
     {
         IRepository<TEntity> Repository<TEntity>(string collectionName) where TEntity : BaseEntity;
+        IMongoCollection<TEntity> GetExistCollection<TEntity>(string collectionName) where TEntity : BaseEntity;
     }
 }
