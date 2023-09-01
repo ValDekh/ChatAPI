@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Chat.Application.Extensions
 {
-    public static class IServiceCollectionExtensions
+    public static class ApplicationExtensions
     {
         public static void AddApplicationLayer(this IServiceCollection services)
         {

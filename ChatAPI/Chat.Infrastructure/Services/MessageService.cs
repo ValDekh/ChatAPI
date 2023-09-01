@@ -1,20 +1,12 @@
 ﻿using AutoMapper;
-using Chat.Application.DTOs.Chat;
 using Chat.Application.DTOs.Message;
 using Chat.Application.Services.Converters;
 using Chat.Application.Services.Interfaces;
-using Chat.Domain.Context;
 using Chat.Domain.Entities;
 using Chat.Domain.Exceptions;
 using Chat.Domain.Interfaces;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Chat.Infrastructure.Services
 {
@@ -38,7 +30,7 @@ namespace Chat.Infrastructure.Services
 
         public async Task<Message> CreateAsync(Guid chatId, MessageDTO gotDTO)
         {
-            await ChatExist(chatId);
+            await ChatExistAsync(chatId);
             gotDTO.ChatId = chatId;
             var newEntity = _mapper.Map<Message>(gotDTO);
             await _repository.AddAsync(newEntity);
@@ -50,7 +42,7 @@ namespace Chat.Infrastructure.Services
 
         public async Task DeleteAsync(Guid chatId, Guid id)
         {
-            await ChatExist(chatId);
+            await ChatExistAsync(chatId);
             ObjectId objectId = ObjectIdGuidConverter.ConvertGuidToObjectId(id);
             if (!ObjectId.TryParse(objectId.ToString(), out _))
             {
@@ -68,7 +60,7 @@ namespace Chat.Infrastructure.Services
         //TODO (Create a pagination here)
         public async Task<IEnumerable<MessageDTO>> GetAllAsync(Guid chatId)
         {
-            await ChatExist(chatId);
+            await ChatExistAsync(chatId);
             var entities = await _repository.GetAllAsync();
             var gotDTO = _mapper.Map<IEnumerable<MessageDTO>>(entities);
             return gotDTO;
@@ -76,7 +68,7 @@ namespace Chat.Infrastructure.Services
 
         public async Task<MessageDTO> GetByIdAsync(Guid chatId,Guid id)
         {
-            await ChatExist(chatId);
+            await ChatExistAsync(chatId);
             ObjectId objectId = ObjectIdGuidConverter.ConvertGuidToObjectId(id);
             if (!ObjectId.TryParse(objectId.ToString(), out _))
             {
@@ -93,7 +85,7 @@ namespace Chat.Infrastructure.Services
 
         public async Task UpdateAsync(Guid chatId, MessageDTO updateDTO, Guid id)
         {
-            await ChatExist(chatId);
+            await ChatExistAsync(chatId);
             ObjectId objectId = ObjectIdGuidConverter.ConvertGuidToObjectId(id);
             if (!ObjectId.TryParse(objectId.ToString(), out _))
             {
@@ -109,9 +101,9 @@ namespace Chat.Infrastructure.Services
             await _repository.UpdateAsync(objectId, updateEntity);
         }
 
-        public async Task DeleteAllChatBelongMessages(Guid chatId)
+        public async Task DeleteAllChatBelongMessagesAsync(Guid chatId)
         {
-            await ChatExist(chatId);
+            await ChatExistAsync(chatId);
             ObjectId chatIdEntity = ObjectIdGuidConverter.ConvertGuidToObjectId(chatId);
             var listWrites = new List<WriteModel<Message>>();
             var filterDefinition = Builders<Message>.Filter.Eq(p => p.ChatId, chatIdEntity);
@@ -119,7 +111,7 @@ namespace Chat.Infrastructure.Services
             await _collection.BulkWriteAsync(listWrites);
         }
 
-        private async Task ChatExist(Guid chatId)
+        private async Task ChatExistAsync(Guid chatId)
         {
             var chat = await _chatService.GetByIdAsync(chatId);
             if (chat is null)

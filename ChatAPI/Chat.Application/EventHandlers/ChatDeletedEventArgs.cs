@@ -8,7 +8,7 @@ namespace Chat.Application.EventHandlers
 {
     public class ChatDeletedEventArgs : EventArgs
     {
-        public Guid ChatId { get; set; }
+        public Guid ChatId { get; }
         public ChatDeletedEventArgs(Guid chatId)
         {
             ChatId = chatId;

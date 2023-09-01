@@ -5,7 +5,6 @@ using Chat.Domain.Interfaces;
 using Chat.Infrastructure.Factory;
 using Chat.Infrastructure.Repositories;
 using Chat.Infrastructure.Services;
-using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -18,7 +17,7 @@ using System.Threading.Tasks;
 
 namespace Chat.Infrastructure.Extensions
 {
-    public static class IServiceCollectionExtensions
+    public static class InfrastructureExtensions
     {
         public static void AddInfrastructureLayer(this IServiceCollection services, IConfiguration configuration)
         {
