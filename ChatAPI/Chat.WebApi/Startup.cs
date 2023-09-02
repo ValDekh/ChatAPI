@@ -8,6 +8,8 @@ using Swashbuckle.AspNetCore.SwaggerUI;
 using Chat.Domain.Context;
 using Chat.Infrastructure.Extensions;
 using Chat.WebApi.Middlewares;
+using Chat.Application.EventHandlers;
+using Chat.Application.Services.Interfaces;
 
 namespace Chat.WebApi
 {
@@ -25,6 +27,7 @@ namespace Chat.WebApi
             services.AddInfrastructureLayer(Configuration);
             services.AddSwaggerGen();
             services.AddTransient<ExceptionHandlingMiddleware>();
+            services.AddSingleton<ChatDeletedEventHandler>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -39,6 +42,9 @@ namespace Chat.WebApi
             app.UseRouting();
             app.UseAuthorization();
             app.UseEndpoints(endpoints => endpoints.MapControllers());
+            var chatDeletedEventHandler = app.ApplicationServices.GetRequiredService<ChatDeletedEventHandler>();
+            var chatService = app.ApplicationServices.GetRequiredService<IChatService>();
+            chatService.ChatDeleted += chatDeletedEventHandler.HandleChatDeleted;
 
         }
 

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Chat.Application.DTOs.Chat;
+using Chat.Application.EventHandlers;
 using Chat.Application.Services.Converters;
 using Chat.Application.Services.Interfaces;
 using Chat.Domain.Context;
@@ -26,13 +27,12 @@ namespace Chat.Infrastructure.Services
         private readonly IRepository<ChatEntity> _repository;
         private readonly IMongoCollection<ChatEntity> _chatCollection;
         private readonly IMongoRepositoryAndCollectionFactory _mongoRepositoryAndCollectionFactory;
-        private readonly IMessageService _messageService;
+        public event EventHandler<ChatDeletedEventArgs> ChatDeleted;
         public ChatDTO ChatDTO { get; set; }
         public ChatService(IMapper mapper,IMongoRepositoryAndCollectionFactory mongoRepositoryFactory, IMessageService messageService)
         {
             _mapper = mapper;
             _mongoRepositoryAndCollectionFactory = mongoRepositoryFactory;
-            _messageService = messageService;
             _repository = _mongoRepositoryAndCollectionFactory.Repository<ChatEntity>("chatCollection");
             _chatCollection = _mongoRepositoryAndCollectionFactory.GetExistCollection<ChatEntity>("chatCollection");
         }
@@ -60,7 +60,7 @@ namespace Chat.Infrastructure.Services
             {
                 throw new ChatNotFoundException(id);
             }
-            await _messageService.DeleteAllChatBelongMessages(id);
+            ChatDeleted?.Invoke(this, new ChatDeletedEventArgs(id));        
             await _repository.DeleteAsync(objectId);
         }
 
