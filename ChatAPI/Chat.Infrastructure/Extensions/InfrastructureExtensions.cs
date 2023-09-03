@@ -2,7 +2,7 @@
 using Chat.Domain.Context;
 using Chat.Domain.Entities;
 using Chat.Domain.Interfaces;
-using Chat.Infrastructure.Factory;
+using Chat.Infrastructure.Factories;
 using Chat.Infrastructure.Repositories;
 using Chat.Infrastructure.Services;
 using Microsoft.Extensions.Configuration;

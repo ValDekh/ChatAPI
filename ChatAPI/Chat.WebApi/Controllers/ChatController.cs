@@ -8,7 +8,7 @@ using MongoDB.Bson.IO;
 using System;
 using Chat.Domain.Interfaces;
 using Chat.Application.DTOs.Chat;
-using Chat.Infrastructure.Factory;
+using Chat.Infrastructure.Factories;
 using Chat.Infrastructure.Services;
 using Chat.Domain.Context;
 using Chat.Application.Services.Interfaces;

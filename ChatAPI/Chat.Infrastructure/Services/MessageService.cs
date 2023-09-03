@@ -15,17 +15,17 @@ namespace Chat.Infrastructure.Services
     {
         private readonly IMapper _mapper;
         private readonly IRepository<Message> _repository;
+        private readonly IRepository<ChatEntity> _chatRepository;
         private readonly IMongoCollection<Message> _collection;
         private readonly IMongoRepositoryAndCollectionFactory _mongoRepositoryAndCollectionFactory;
-        private readonly IChatService _chatService;
         public MessageDTO MessageDTO { get; set; }
-        public MessageService(IMapper mapper, IMongoRepositoryAndCollectionFactory mongoRepositoryFactory, IChatService chatService)
+        public MessageService(IMapper mapper, IMongoRepositoryAndCollectionFactory mongoRepositoryFactory)
         {
             _mapper = mapper;
             _mongoRepositoryAndCollectionFactory = mongoRepositoryFactory;
             _repository = _mongoRepositoryAndCollectionFactory.Repository<Message>("messageCollection");
+            _chatRepository = _mongoRepositoryAndCollectionFactory.Repository<ChatEntity>("chatCollection");
             _collection = _mongoRepositoryAndCollectionFactory.GetExistCollection<Message>("messageCollection");
-            _chatService = chatService;
         }
 
         public async Task<Message> CreateAsync(Guid chatId, MessageDTO gotDTO)
@@ -34,7 +34,6 @@ namespace Chat.Infrastructure.Services
             gotDTO.ChatId = chatId;
             var newEntity = _mapper.Map<Message>(gotDTO);
             await _repository.AddAsync(newEntity);
-            await _chatService.UpdateMassageIdListAsync(chatId, newEntity.Id);
             MessageDTO = _mapper.Map<MessageDTO>(newEntity);
             return newEntity;
         }
@@ -53,7 +52,6 @@ namespace Chat.Infrastructure.Services
             {
                 throw new MessageNotFoundException(id);
             }
-            await _chatService.DeleteMassageIdListAsync(chatId,objectId);
             await _repository.DeleteAsync(objectId);
         }
 
@@ -113,7 +111,12 @@ namespace Chat.Infrastructure.Services
 
         private async Task ChatExistAsync(Guid chatId)
         {
-            var chat = await _chatService.GetByIdAsync(chatId);
+            ObjectId chatObjectId = ObjectIdGuidConverter.ConvertGuidToObjectId(chatId);
+            if (!ObjectId.TryParse(chatObjectId.ToString(), out _))
+            {
+                throw new InvalidDataException("Invalid format.");
+            }
+            var chat = await _chatRepository.GetByIdAsync(chatObjectId);
             if (chat is null)
             {
                 throw new ChatNotFoundException(chatId);

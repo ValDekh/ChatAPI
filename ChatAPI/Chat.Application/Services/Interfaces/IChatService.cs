@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Chat.Application.DTOs.Chat;
-using Chat.Application.EventHandlers;
+using Chat.Application.EventHandlers.ChatEventHandler;
 using Chat.Domain.Entities;
 using Chat.Domain.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -21,8 +21,6 @@ namespace Chat.Application.Services.Interfaces
         Task<IEnumerable<ChatDTO>> GetAllAsync();
         Task<ChatDTO> GetByIdAsync(Guid id);
         Task UpdateAsync(ChatDTO updateDTO, Guid id);
-        Task UpdateMassageIdListAsync(Guid chatId, ObjectId messageId);
-        Task DeleteMassageIdListAsync(Guid chatId, ObjectId messageId);
         event EventHandler<ChatDeletedEventArgs> ChatDeleted;
     }
 }

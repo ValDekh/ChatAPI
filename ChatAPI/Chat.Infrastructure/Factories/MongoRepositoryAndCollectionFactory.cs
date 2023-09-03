@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Chat.Infrastructure.Factory
+namespace Chat.Infrastructure.Factories
 {
     public class MongoRepositoryAndCollectionFactory : IMongoRepositoryAndCollectionFactory
     {

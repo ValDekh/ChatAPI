@@ -20,9 +20,7 @@ namespace Chat.Application.Common.Mappings
                 .ForMember(dest => dest.Id, opt => opt
                 .MapFrom(src => ObjectIdGuidConverter.ConvertObjectIdToGuid(src.Id)))
               .ForMember(dest => dest.Users, opt => opt
-                  .MapFrom(src => src.Users.Select(u => ObjectIdGuidConverter.ConvertObjectIdToGuid(u)).ToList()))
-              .ForMember(dest => dest.MessageId, opt => opt
-                  .MapFrom(src => src.MessageId.Select(u => ObjectIdGuidConverter.ConvertObjectIdToGuid(u)).ToList()));
+                  .MapFrom(src => src.Users.Select(u => ObjectIdGuidConverter.ConvertObjectIdToGuid(u)).ToList()));
 
             CreateMap<Message, MessageDTO>()
                 .ForMember(dest => dest.Id, opt => opt
@@ -38,9 +36,7 @@ namespace Chat.Application.Common.Mappings
                 .ForMember(dest => dest.Id, opt => opt
                 .MapFrom(src => ObjectIdGuidConverter.ConvertGuidToObjectId(src.Id)))
              .ForMember(dest => dest.Users, opt => opt
-                 .MapFrom(src => src.Users.Select(u => ObjectIdGuidConverter.ConvertGuidToObjectId(u)).ToList()))
-             .ForMember(dest => dest.MessageId, opt => opt
-                  .MapFrom(src => src.MessageId.Select(u => ObjectIdGuidConverter.ConvertGuidToObjectId(u)).ToList()));
+                 .MapFrom(src => src.Users.Select(u => ObjectIdGuidConverter.ConvertGuidToObjectId(u)).ToList()));
 
             CreateMap<MessageDTO, Message>()
                 .ForMember(dest => dest.Id, opt => opt

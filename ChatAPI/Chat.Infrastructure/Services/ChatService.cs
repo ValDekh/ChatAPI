@@ -1,13 +1,13 @@
 ﻿using AutoMapper;
 using Chat.Application.DTOs.Chat;
-using Chat.Application.EventHandlers;
+using Chat.Application.EventHandlers.ChatEventHandler;
 using Chat.Application.Services.Converters;
 using Chat.Application.Services.Interfaces;
 using Chat.Domain.Context;
 using Chat.Domain.Entities;
 using Chat.Domain.Exceptions;
 using Chat.Domain.Interfaces;
-using Chat.Infrastructure.Factory;
+using Chat.Infrastructure.Factories;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -102,26 +102,6 @@ namespace Chat.Infrastructure.Services
             var updateEntity = _mapper.Map<ChatEntity>(updateDTO);
             updateEntity.Id = oldEntity.Id;
             await _repository.UpdateAsync(objectId, updateEntity);
-        }
-
-        public async Task UpdateMassageIdListAsync(Guid chatId, ObjectId messageId)
-        {
-            ObjectId id = ObjectIdGuidConverter.ConvertGuidToObjectId(chatId);
-            var listWrites = new List<WriteModel<ChatEntity>>();
-            var filterDefinition = Builders<ChatEntity>.Filter.Eq(p => p.Id, id);
-            var updateDefinition = Builders<ChatEntity>.Update.AddToSet(p => p.MessageId, messageId);
-            listWrites.Add(new UpdateOneModel<ChatEntity>(filterDefinition, updateDefinition));
-            var resultWrites = await  _chatCollection.BulkWriteAsync(listWrites);
-        }
-
-        public async Task DeleteMassageIdListAsync(Guid chatId, ObjectId messageId)
-        {
-            ObjectId id = ObjectIdGuidConverter.ConvertGuidToObjectId(chatId);
-            var listWrites = new List<WriteModel<ChatEntity>>();
-            var filterDefinition = Builders<ChatEntity>.Filter.Eq(p => p.Id, id);
-            var updateDefinition = Builders<ChatEntity>.Update.Pull(p => p.MessageId, messageId);
-            listWrites.Add(new UpdateOneModel<ChatEntity>(filterDefinition, updateDefinition));
-            var resultWrites = await _chatCollection.BulkWriteAsync(listWrites);
         }
     }
 }

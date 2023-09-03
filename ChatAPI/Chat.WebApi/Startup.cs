@@ -8,8 +8,8 @@ using Swashbuckle.AspNetCore.SwaggerUI;
 using Chat.Domain.Context;
 using Chat.Infrastructure.Extensions;
 using Chat.WebApi.Middlewares;
-using Chat.Application.EventHandlers;
 using Chat.Application.Services.Interfaces;
+using Chat.Application.EventHandlers.ChatEventHandler;
 
 namespace Chat.WebApi
 {
