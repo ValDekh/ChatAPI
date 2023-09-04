@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Chat.Application.Factories;
+using Microsoft.Extensions.DependencyInjection;
 
 using System;
 using System.Collections.Generic;
@@ -13,12 +14,22 @@ namespace Chat.Application.Extensions
     {
         public static void AddApplicationLayer(this IServiceCollection services)
         {
-            services.AddAutoMapper();        
+            services.AddAutoMapper();
         }
 
         private static void AddAutoMapper(this IServiceCollection services)
         {
-        services.AddAutoMapper(Assembly.GetExecutingAssembly());
+            services.AddAutoMapper(Assembly.GetExecutingAssembly());
+        }
+
+        public static IServiceCollection AddEventHandlers(this IServiceCollection services)
+        {
+            services.AddSingleton<ObserverAndHandlerFactory>();
+            services.AddSingleton(provider =>
+                provider.GetRequiredService<ObserverAndHandlerFactory>().CreateObserver());
+            services.AddSingleton(provider =>
+                provider.GetRequiredService<ObserverAndHandlerFactory>().CreateEventHandler());
+            return services;
         }
     }
 }

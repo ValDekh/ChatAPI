@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Chat.Application.EventHandlers.ChatEventHandler
+namespace Chat.Application.EventHandlers.ChatEventHandlers
 {
     public class ChatDeletedEventHandler : BaseEventHandler<ChatDeletedEventArgs>
     {

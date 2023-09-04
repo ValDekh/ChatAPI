@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Chat.Application.EventHandlers
+namespace Chat.Application.EventHandlers.ChatEventHandlers
 {
     public class ChatDeletedEventArgs : EventArgs
     {

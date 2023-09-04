@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Chat.Application.DTOs.Chat;
-using Chat.Application.EventHandlers.ChatEventHandler;
+using Chat.Application.EventHandlers.ChatEventHandlers;
 using Chat.Domain.Entities;
 using Chat.Domain.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -15,13 +15,12 @@ namespace Chat.Application.Services.Interfaces
 {
     public interface IChatService
     {
-        public ChatDTO ChatDTO { get; set; }
-        Task<ChatEntity> CreateAsync(ChatDTO gotDTO);
+        public ChatDTOResponse ChatDTOResponse { get; set; }
+        Task<ChatEntity> CreateAsync(ChatDTORequest gotDTO);
         Task DeleteAsync(Guid id);
-        Task<IEnumerable<ChatDTO>> GetAllAsync();
-        Task<ChatDTO> GetByIdAsync(Guid id);
-        Task UpdateAsync(ChatDTO updateDTO, Guid id);
-        event EventHandler<ChatDeletedEventArgs> ChatDeleted;
+        Task<IEnumerable<ChatDTOResponse>> GetAllAsync();
+        Task<ChatDTOResponse> GetByIdAsync(Guid id);
+        Task UpdateAsync(ChatDTORequest updateDTO, Guid id);
     }
 }
 

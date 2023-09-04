@@ -9,7 +9,7 @@ using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Chat.Application.EventHandlers.ChatEventHandler
+namespace Chat.Application.EventHandlers.ChatEventHandlers
 {
     public class ChatDeleteObserver
     {
@@ -22,7 +22,7 @@ namespace Chat.Application.EventHandlers.ChatEventHandler
 
         public async void DeleteMessagesAsync(object sender, ChatDeletedEventArgs e)
         {
-            await _messageService.DeleteAllChatBelongMessagesAsync(e.ChatId);
+            await _messageService.DeleteAllMessagesAsync(e.ChatId);
         }
     }
 }

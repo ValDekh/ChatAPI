@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Chat.Application.DTOs.Chat;
-using Chat.Application.EventHandlers.ChatEventHandler;
+using Chat.Application.EventHandlers.ChatEventHandlers;
 using Chat.Application.Services.Converters;
 using Chat.Application.Services.Interfaces;
 using Chat.Domain.Context;
@@ -8,6 +8,7 @@ using Chat.Domain.Entities;
 using Chat.Domain.Exceptions;
 using Chat.Domain.Interfaces;
 using Chat.Infrastructure.Factories;
+using Chat.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -24,28 +25,27 @@ namespace Chat.Infrastructure.Services
       
     {
         private readonly IMapper _mapper;
-        private readonly IRepository<ChatEntity> _repository;
-        private readonly IMongoCollection<ChatEntity> _chatCollection;
+        private readonly IChatRepository _repository;
         private readonly IMongoRepositoryAndCollectionFactory _mongoRepositoryAndCollectionFactory;
-        public event EventHandler<ChatDeletedEventArgs> ChatDeleted;
-        public ChatDTO ChatDTO { get; set; }
-        public ChatService(IMapper mapper,IMongoRepositoryAndCollectionFactory mongoRepositoryFactory, IMessageService messageService)
+        public readonly ChatDeletedEventHandler _chatDeletedEvent;
+        public ChatDTOResponse ChatDTOResponse { get; set; }
+        public ChatService(IMapper mapper,
+            IMongoRepositoryAndCollectionFactory mongoRepositoryFactory,
+            ChatDeletedEventHandler chatDeletedEventHandler)
         {
             _mapper = mapper;
             _mongoRepositoryAndCollectionFactory = mongoRepositoryFactory;
-            _repository = _mongoRepositoryAndCollectionFactory.Repository<ChatEntity>("chatCollection");
-            _chatCollection = _mongoRepositoryAndCollectionFactory.GetExistCollection<ChatEntity>("chatCollection");
+            _repository = new ChatRepository(_mongoRepositoryAndCollectionFactory.GetExistOrNewCollection<ChatEntity>("chatCollection"));
+            _chatDeletedEvent = chatDeletedEventHandler;
         }
-
         
-        public async Task<ChatEntity> CreateAsync(ChatDTO gotDTO)
+        public async Task<ChatEntity> CreateAsync(ChatDTORequest ChatDTORequest)
         {
-            var newEntity = _mapper.Map<ChatEntity>(gotDTO);
+            var newEntity = _mapper.Map<ChatEntity>(ChatDTORequest);
             await _repository.AddAsync(newEntity);
-            ChatDTO = _mapper.Map<ChatDTO>(newEntity);
+            ChatDTOResponse = _mapper.Map<ChatDTOResponse>(newEntity);
             return newEntity;
         }
-
 
         public async Task DeleteAsync(Guid id)
         {
@@ -60,18 +60,18 @@ namespace Chat.Infrastructure.Services
             {
                 throw new ChatNotFoundException(id);
             }
-            ChatDeleted?.Invoke(this, new ChatDeletedEventArgs(id));        
+            _chatDeletedEvent?.CreateInvoke(new ChatDeletedEventArgs(id));
             await _repository.DeleteAsync(objectId);
         }
 
-        public async Task<IEnumerable<ChatDTO>> GetAllAsync()
+        public async Task<IEnumerable<ChatDTOResponse>> GetAllAsync()
         {
             var entities = await _repository.GetAllAsync();
-            var gotDTO = _mapper.Map<IEnumerable<ChatDTO>>(entities);
+            var gotDTO = _mapper.Map<IEnumerable<ChatDTOResponse>>(entities);
             return gotDTO;
         }
 
-        public async Task<ChatDTO> GetByIdAsync(Guid id)
+        public async Task<ChatDTOResponse> GetByIdAsync(Guid id)
         {
             ObjectId objectId = ObjectIdGuidConverter.ConvertGuidToObjectId(id);
             if (!ObjectId.TryParse(objectId.ToString(), out _))
@@ -83,11 +83,11 @@ namespace Chat.Infrastructure.Services
                 {
                     throw new ChatNotFoundException(id);
                 }
-            var gotDTO = _mapper.Map<ChatDTO>(entity);
+            var gotDTO = _mapper.Map<ChatDTOResponse>(entity);
             return gotDTO;
         }
 
-        public async Task UpdateAsync(ChatDTO updateDTO, Guid id)
+        public async Task UpdateAsync(ChatDTORequest updateDTO, Guid id)
         {
             ObjectId objectId = ObjectIdGuidConverter.ConvertGuidToObjectId(id);
             if (!ObjectId.TryParse(objectId.ToString(), out _))

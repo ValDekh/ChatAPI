@@ -15,12 +15,6 @@ namespace Chat.Infrastructure.Repositories
             _entityCollection = entityCollection;
         }
 
-        public async Task<List<TEntity>> GetAllAsync()
-        {
-            var filter = Builders<TEntity>.Filter.Empty;
-            return await _entityCollection.Find(filter).ToListAsync();
-        }
-
         public async Task<TEntity?> GetByIdAsync(ObjectId id)
         {
             var filter = Builders<TEntity>.Filter.Eq(x => x.Id, id);

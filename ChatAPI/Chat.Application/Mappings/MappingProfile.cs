@@ -16,13 +16,13 @@ namespace Chat.Application.Common.Mappings
     {
         public MappingProfile()
         {
-            CreateMap<ChatEntity, ChatDTO>()
+            CreateMap<ChatEntity, ChatDTOResponse>()
                 .ForMember(dest => dest.Id, opt => opt
                 .MapFrom(src => ObjectIdGuidConverter.ConvertObjectIdToGuid(src.Id)))
               .ForMember(dest => dest.Users, opt => opt
                   .MapFrom(src => src.Users.Select(u => ObjectIdGuidConverter.ConvertObjectIdToGuid(u)).ToList()));
 
-            CreateMap<Message, MessageDTO>()
+            CreateMap<Message, MessageDTOResponse>()
                 .ForMember(dest => dest.Id, opt => opt
                 .MapFrom(src => ObjectIdGuidConverter.ConvertObjectIdToGuid(src.Id)))
              .ForMember(dest => dest.SenderId, opt => opt.MapFrom(src =>
@@ -32,26 +32,53 @@ namespace Chat.Application.Common.Mappings
              .ForMember(dest => dest.ChatId, opt => opt.MapFrom(src =>
                      ObjectIdGuidConverter.ConvertObjectIdToGuid(src.ChatId)));
 
-            CreateMap<ChatDTO, ChatEntity>()
-                .ForMember(dest => dest.Id, opt => opt
-                .MapFrom(src => ObjectIdGuidConverter.ConvertGuidToObjectId(src.Id)))
+            CreateMap<ChatDTORequest, ChatEntity>()
              .ForMember(dest => dest.Users, opt => opt
                  .MapFrom(src => src.Users.Select(u => ObjectIdGuidConverter.ConvertGuidToObjectId(u)).ToList()));
 
-            CreateMap<MessageDTO, Message>()
-                .ForMember(dest => dest.Id, opt => opt
-                .MapFrom(src => ObjectIdGuidConverter.ConvertGuidToObjectId(src.Id)))
+            CreateMap<MessageDTORequest, Message>()
              .ForMember(dest => dest.SenderId, opt => opt.MapFrom(src =>
                     ObjectIdGuidConverter.ConvertGuidToObjectId(src.SenderId)))
              .ForMember(dest => dest.ReceiverId, opt => opt.MapFrom(src =>
-                    ObjectIdGuidConverter.ConvertGuidToObjectId(src.ReceiverId)))
-             .ForMember(dest => dest.ChatId, opt => opt.MapFrom(src =>
-                    ObjectIdGuidConverter.ConvertGuidToObjectId(src.ChatId)));
+                    ObjectIdGuidConverter.ConvertGuidToObjectId(src.ReceiverId)));
 
             CreateMap<ObjectId, string>().ConvertUsing(src => src.ToString());
             CreateMap<string, ObjectId>().ConvertUsing(src => ObjectId.Parse(src));
 
+            //CreateMap<ChatEntity, ChatDTO>()
+            //   .ForMember(dest => dest.Id, opt => opt
+            //   .MapFrom(src => ObjectIdGuidConverter.ConvertObjectIdToGuid(src.Id)))
+            // .ForMember(dest => dest.Users, opt => opt
+            //     .MapFrom(src => src.Users.Select(u => ObjectIdGuidConverter.ConvertObjectIdToGuid(u)).ToList()));
 
+            //CreateMap<Message, MessageDTOResponse>()
+            //    .ForMember(dest => dest.Id, opt => opt
+            //    .MapFrom(src => ObjectIdGuidConverter.ConvertObjectIdToGuid(src.Id)))
+            // .ForMember(dest => dest.SenderId, opt => opt.MapFrom(src =>
+            //        ObjectIdGuidConverter.ConvertObjectIdToGuid(src.SenderId)))
+            // .ForMember(dest => dest.ReceiverId, opt => opt.MapFrom(src =>
+            //         ObjectIdGuidConverter.ConvertObjectIdToGuid(src.ReceiverId)))
+            // .ForMember(dest => dest.ChatId, opt => opt.MapFrom(src =>
+            //         ObjectIdGuidConverter.ConvertObjectIdToGuid(src.ChatId)));
+
+            //CreateMap<ChatDTO, ChatEntity>()
+            //    .ForMember(dest => dest.Id, opt => opt
+            //    .MapFrom(src => ObjectIdGuidConverter.ConvertGuidToObjectId(src.Id)))
+            // .ForMember(dest => dest.Users, opt => opt
+            //     .MapFrom(src => src.Users.Select(u => ObjectIdGuidConverter.ConvertGuidToObjectId(u)).ToList()));
+
+            //CreateMap<MessageDTOResponse, Message>()
+            //    .ForMember(dest => dest.Id, opt => opt
+            //    .MapFrom(src => ObjectIdGuidConverter.ConvertGuidToObjectId(src.Id)))
+            // .ForMember(dest => dest.SenderId, opt => opt.MapFrom(src =>
+            //        ObjectIdGuidConverter.ConvertGuidToObjectId(src.SenderId)))
+            // .ForMember(dest => dest.ReceiverId, opt => opt.MapFrom(src =>
+            //        ObjectIdGuidConverter.ConvertGuidToObjectId(src.ReceiverId)))
+            // .ForMember(dest => dest.ChatId, opt => opt.MapFrom(src =>
+            //        ObjectIdGuidConverter.ConvertGuidToObjectId(src.ChatId)));
+
+            //CreateMap<ObjectId, string>().ConvertUsing(src => src.ToString());
+            //CreateMap<string, ObjectId>().ConvertUsing(src => ObjectId.Parse(src));
         }
     }
 }

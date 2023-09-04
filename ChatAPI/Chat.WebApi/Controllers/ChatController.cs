@@ -43,16 +43,16 @@ namespace Chat.WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAsync(ChatDTO newChatDTO)
+        public async Task<IActionResult> CreateAsync(ChatDTORequest newChatDTO)
         {
             var chatEntity = await _chatServices.CreateAsync(newChatDTO);
-            newChatDTO = _chatServices.ChatDTO;
-            return CreatedAtAction(nameof(GetByIdAsync), new { id = newChatDTO.Id }, newChatDTO);
+            var newChatDTOResponse = _chatServices.ChatDTOResponse;
+            return CreatedAtAction(nameof(GetByIdAsync), new { id = newChatDTOResponse.Id }, newChatDTOResponse);
         }
 
 
         [HttpPut("{chatId:Guid}")]
-        public async Task<IActionResult> UpdateAsync([FromRoute] Guid chatId, [FromBody] ChatDTO updateChatDTO)
+        public async Task<IActionResult> UpdateAsync([FromRoute] Guid chatId, [FromBody] ChatDTORequest updateChatDTO)
         {
             await _chatServices.UpdateAsync(updateChatDTO, chatId);
             return Ok();

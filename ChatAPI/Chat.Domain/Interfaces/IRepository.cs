@@ -11,8 +11,6 @@ namespace Chat.Domain.Interfaces
     public interface IRepository<TEntity>
         where TEntity : BaseEntity
     {
-        Task<List<TEntity>> GetAllAsync();
-
         Task<TEntity?> GetByIdAsync(ObjectId id);
 
         Task AddAsync(TEntity entity);

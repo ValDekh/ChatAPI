@@ -24,13 +24,7 @@ namespace Chat.Infrastructure.Factories
             _database = _mongoClient.GetDatabase(_dbSetting.DatabaseName);
         }
 
-        public IRepository<T> Repository<T>(string collectionName) where T : BaseEntity
-        {
-            var collection = _database.GetCollection<T>(collectionName);
-            return new Repository<T>(collection);
-        }
-
-        public IMongoCollection<T> GetExistCollection<T>(string collectionName) where T : BaseEntity
+        public IMongoCollection<T> GetExistOrNewCollection<T>(string collectionName) where T : BaseEntity
         {
             var collection = _database.GetCollection<T>(collectionName);
             return collection;
