@@ -26,11 +26,11 @@ namespace Chat.Infrastructure.Services
     {
         private readonly IMapper _mapper;
         private readonly IChatRepository _repository;
-        private readonly IMongoRepositoryAndCollectionFactory _mongoRepositoryAndCollectionFactory;
+        private readonly IMongoCollectionFactory _mongoRepositoryAndCollectionFactory;
         public readonly ChatDeletedEventHandler _chatDeletedEvent;
         public ChatDTOResponse ChatDTOResponse { get; set; }
         public ChatService(IMapper mapper,
-            IMongoRepositoryAndCollectionFactory mongoRepositoryFactory,
+            IMongoCollectionFactory mongoRepositoryFactory,
             ChatDeletedEventHandler chatDeletedEventHandler)
         {
             _mapper = mapper;

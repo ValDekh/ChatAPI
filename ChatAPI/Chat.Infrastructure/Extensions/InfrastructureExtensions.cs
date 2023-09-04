@@ -55,7 +55,7 @@ namespace Chat.Infrastructure.Extensions
 
         private static void AddMongoRepositoryFactory(this IServiceCollection services)
         {
-            services.AddScoped<IMongoRepositoryAndCollectionFactory,MongoRepositoryAndCollectionFactory>();
+            services.AddScoped<IMongoCollectionFactory,MongoCollectionFactory>();
         }
 
         private static void AddServices(this IServiceCollection services)

@@ -11,6 +11,6 @@ namespace Chat.Domain.Interfaces
     public interface IMessageRepository : IRepository<Message>
     {
         Task<List<Message>> GetAllAsync(ObjectId chatId);
-      //  Task DeleteAllMessagesAsync(Guid chatId);
+        Task DeleteAllMessagesAsync(Guid chatId);
     }
 }

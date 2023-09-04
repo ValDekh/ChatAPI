@@ -19,14 +19,14 @@ namespace Chat.Infrastructure.Repositories
             _entityCollection = entityCollection;
         }
 
-        //public async Task DeleteAllMessagesAsync(Guid chatId)
-        //{
-        //    ObjectId chatIdEntity = ObjectIdGuidConverter.ConvertGuidToObjectId(chatId);
-        //    var listWrites = new List<WriteModel<Message>>();
-        //    var filterDefinition = Builders<Message>.Filter.Eq(p => p.ChatId, chatIdEntity);
-        //    listWrites.Add(new DeleteManyModel<Message>(filterDefinition));
-        //    await _entityCollection.BulkWriteAsync(listWrites);
-        //}
+        public async Task DeleteAllMessagesAsync(Guid chatId)
+        {
+            ObjectId chatIdEntity = ObjectIdGuidConverter.ConvertGuidToObjectId(chatId);
+            var listWrites = new List<WriteModel<Message>>();
+            var filterDefinition = Builders<Message>.Filter.Eq(p => p.ChatId, chatIdEntity);
+            listWrites.Add(new DeleteManyModel<Message>(filterDefinition));
+            await _entityCollection.BulkWriteAsync(listWrites);
+        }
 
         public async Task<List<Message>> GetAllAsync(ObjectId chatId)
         {

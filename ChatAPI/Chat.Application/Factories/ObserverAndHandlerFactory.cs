@@ -20,11 +20,12 @@ namespace Chat.Application.Factories
             _serviceProvider = serviceProvider;
         }
 
-        public ChatDeleteObserver CreateObserver()
+        public ChatObserver CreateObserver()
         {
             using var scope = _serviceProvider.CreateScope();
-            var messageService = scope.ServiceProvider.GetRequiredService<IMessageService>();
-            return new ChatDeleteObserver(messageService);
+            var mongoCollectionFactory = scope.ServiceProvider.GetRequiredService<IMongoCollectionFactory>();
+            var messageRepository = scope.ServiceProvider.GetRequiredService<IMessageRepository>();
+            return new ChatObserver(messageService);
         }
 
         public ChatDeletedEventHandler CreateEventHandler()

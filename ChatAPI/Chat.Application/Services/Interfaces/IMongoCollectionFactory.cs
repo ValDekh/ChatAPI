@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Chat.Application.Services.Interfaces
 {
-    public interface IMongoRepositoryAndCollectionFactory
+    public interface IMongoCollectionFactory
       
     {
         IMongoCollection<TEntity> GetExistOrNewCollection<TEntity>(string collectionName) where TEntity : BaseEntity;
