@@ -100,6 +100,7 @@ namespace Chat.Infrastructure.Services
             }
             var updateEntity = _mapper.Map<Message>(updateDTO);
             updateEntity.Id = oldEntity.Id;
+            updateEntity.ChatId = oldEntity.ChatId;
             await _messageRepository.UpdateAsync(objectId, updateEntity);
         }
 

@@ -24,13 +24,5 @@ namespace Chat.Infrastructure.Repositories
             var filter = Builders<ChatEntity>.Filter.Empty;
             return await _entityCollection.Find(filter).ToListAsync();
         }
-
-        //public async Task UpdateAsync(ObjectId id, ChatEntity entity)
-        //{
-        //    var filter = Builders<ChatEntity>.Filter.Eq(x => x.Id, id);
-        //    var update = Builders<ChatEntity>.Update.Set(x => x.Users, entity.Users);
-        //    await _entityCollection.UpdateOneAsync(filter, update);
-        //}
-
     }
 }

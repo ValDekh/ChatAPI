@@ -29,8 +29,7 @@ namespace Chat.Infrastructure.Repositories
         public async Task UpdateAsync(ObjectId id, TEntity entity)
         {
             var filter = Builders<TEntity>.Filter.Eq(x => x.Id, id);
-            var updateDefinition = Builders<TEntity>.Update.Set(x => x, entity);
-            await _entityCollection.UpdateOneAsync(filter, updateDefinition);
+            await _entityCollection.ReplaceOneAsync(filter, entity);
         }
 
         public async Task DeleteAsync(ObjectId id)
