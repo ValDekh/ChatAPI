@@ -16,12 +16,10 @@ namespace Chat.Application.EventHandlers.ChatEventHandlers
 {
     public class ChatObserver
     {
-        private readonly IMongoCollectionFactory _mongoCollectionFactory;
         private readonly IMessageRepository _messageRepository;
 
-        public ChatObserver(IMongoCollectionFactory mongoCollectionFactory, IMessageRepository messageRepository)
+        public ChatObserver(IMessageRepository messageRepository)
         {
-            _mongoCollectionFactory = mongoCollectionFactory;
             _messageRepository = messageRepository;
         }
 

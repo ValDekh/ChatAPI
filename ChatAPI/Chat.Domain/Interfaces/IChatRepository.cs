@@ -1,4 +1,5 @@
 ﻿using Chat.Domain.Entities;
+using MongoDB.Bson;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,5 +11,6 @@ namespace Chat.Domain.Interfaces
     public interface IChatRepository : IRepository<ChatEntity>
     {
         Task<List<ChatEntity>> GetAllAsync();
+     //   Task UpdateAsync(ObjectId id, ChatEntity entity);
     }
 }

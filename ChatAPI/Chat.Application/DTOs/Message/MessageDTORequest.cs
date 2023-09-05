@@ -8,10 +8,8 @@ namespace Chat.Application.DTOs.Message
 {
     public class MessageDTORequest
     {
-       // public Guid Id { get; set; }
         public Guid SenderId { get; set; }
         public Guid ReceiverId { get; set; }
-      //  public Guid ChatId { get; set; }
         public string Text { get; set; }
         public string TrackUrl { get; set; }
     }

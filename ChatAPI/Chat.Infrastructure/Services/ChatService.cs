@@ -22,23 +22,19 @@ using System.Threading.Tasks;
 namespace Chat.Infrastructure.Services
 {
     public class ChatService : IChatService
-      
+
     {
         private readonly IMapper _mapper;
         private readonly IChatRepository _repository;
-        private readonly IMongoCollectionFactory _mongoRepositoryAndCollectionFactory;
         public readonly ChatDeletedEventHandler _chatDeletedEvent;
         public ChatDTOResponse ChatDTOResponse { get; set; }
-        public ChatService(IMapper mapper,
-            IMongoCollectionFactory mongoRepositoryFactory,
-            ChatDeletedEventHandler chatDeletedEventHandler)
+        public ChatService(IMapper mapper, IChatRepository chatRepository, ChatDeletedEventHandler chatDeletedEventHandler)
         {
             _mapper = mapper;
-            _mongoRepositoryAndCollectionFactory = mongoRepositoryFactory;
-            _repository = new ChatRepository(_mongoRepositoryAndCollectionFactory.GetExistOrNewCollection<ChatEntity>("chatCollection"));
+            _repository = chatRepository;
             _chatDeletedEvent = chatDeletedEventHandler;
         }
-        
+
         public async Task<ChatEntity> CreateAsync(ChatDTORequest ChatDTORequest)
         {
             var newEntity = _mapper.Map<ChatEntity>(ChatDTORequest);
@@ -80,9 +76,9 @@ namespace Chat.Infrastructure.Services
             }
             var entity = await _repository.GetByIdAsync(objectId);
             if (entity is null)
-                {
-                    throw new ChatNotFoundException(id);
-                }
+            {
+                throw new ChatNotFoundException(id);
+            }
             var gotDTO = _mapper.Map<ChatDTOResponse>(entity);
             return gotDTO;
         }
@@ -91,14 +87,14 @@ namespace Chat.Infrastructure.Services
         {
             ObjectId objectId = ObjectIdGuidConverter.ConvertGuidToObjectId(id);
             if (!ObjectId.TryParse(objectId.ToString(), out _))
-                {
-                    throw new InvalidDataException("Invalid format.");
-                }
+            {
+                throw new InvalidDataException("Invalid format.");
+            }
             var oldEntity = await _repository.GetByIdAsync(objectId);
             if (oldEntity is null)
-                {
-                    throw new ChatNotFoundException(id);
-                }
+            {
+                throw new ChatNotFoundException(id);
+            }
             var updateEntity = _mapper.Map<ChatEntity>(updateDTO);
             updateEntity.Id = oldEntity.Id;
             await _repository.UpdateAsync(objectId, updateEntity);

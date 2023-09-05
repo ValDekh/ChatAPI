@@ -12,5 +12,6 @@ namespace Chat.Domain.Interfaces
     {
         Task<List<Message>> GetAllAsync(ObjectId chatId);
         Task DeleteAllMessagesAsync(Guid chatId);
+       // Task UpdateAsync(ObjectId id, Message entity);
     }
 }

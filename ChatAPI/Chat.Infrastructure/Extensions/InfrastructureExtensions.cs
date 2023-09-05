@@ -49,19 +49,30 @@ namespace Chat.Infrastructure.Extensions
 
         private static void AddRepositories(this IServiceCollection services)
         {
-            services
-                .AddTransient(typeof(IRepository<>), typeof(Repository<>));
+            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            // services.AddScoped<IMessageRepository, MessageRepository>();
+            //  services.AddScoped<IChatRepository, ChatRepository>();
+            services.AddScoped<IMessageRepository>(provider =>
+           {
+               var mongoCollectionFactory = provider.GetRequiredService<IMongoCollectionFactory>();
+               return new MessageRepository(mongoCollectionFactory);
+           });
+            services.AddScoped<IChatRepository>(provider =>
+            {
+                var mongoCollectionFactory = provider.GetRequiredService<IMongoCollectionFactory>();
+                return new ChatRepository(mongoCollectionFactory);
+            });
         }
 
         private static void AddMongoRepositoryFactory(this IServiceCollection services)
         {
-            services.AddScoped<IMongoCollectionFactory,MongoCollectionFactory>();
+            services.AddScoped<IMongoCollectionFactory, MongoCollectionFactory>();
         }
 
         private static void AddServices(this IServiceCollection services)
         {
-            services.AddScoped<IChatService,ChatService>();
-            services.AddScoped<IMessageService,MessageService>(); 
+            services.AddScoped<IChatService, ChatService>();
+            services.AddScoped<IMessageService, MessageService>();
         }
     }
 }
