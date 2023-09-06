@@ -8,6 +8,7 @@ using Chat.Domain.Interfaces;
 using Chat.Infrastructure.Repositories;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using System;
 
 namespace Chat.Infrastructure.Services
 {
@@ -54,7 +55,21 @@ namespace Chat.Infrastructure.Services
             await _messageRepository.DeleteAsync(objectId);
         }
 
-        //TODO (Create a pagination here)
+        public async Task<List<MessageDTOResponse>> GetMessagesWithPaginationAsync(Guid chatId, int page)
+        {
+            const int pageSize = 10;
+            await ChatExistAsync(chatId);
+            ObjectId objectId = ObjectIdGuidConverter.ConvertGuidToObjectId(chatId);
+            if (!ObjectId.TryParse(objectId.ToString(), out _))
+            {
+                throw new InvalidDataException("Invalid format.");
+            }
+            var skip = (page - 1) * pageSize;
+            var messages = await _messageRepository.GetMessagesWithPaginationAsync(objectId, skip, pageSize);
+            var messageDTOs = _mapper.Map<List<MessageDTOResponse>>(messages);
+            return messageDTOs;
+        }
+
         public async Task<IEnumerable<MessageDTOResponse>> GetAllAsync(Guid chatId)
         {
             ObjectId chatObjectId = ObjectIdGuidConverter.ConvertGuidToObjectId(chatId);
@@ -103,16 +118,6 @@ namespace Chat.Infrastructure.Services
             updateEntity.ChatId = oldEntity.ChatId;
             await _messageRepository.UpdateAsync(objectId, updateEntity);
         }
-
-        //public async Task DeleteAllMessagesAsync(Guid chatId)
-        //{
-        //    await ChatExistAsync(chatId);
-        //    ObjectId chatIdEntity = ObjectIdGuidConverter.ConvertGuidToObjectId(chatId);
-        //    var listWrites = new List<WriteModel<Message>>();
-        //    var filterDefinition = Builders<Message>.Filter.Eq(p => p.ChatId, chatIdEntity);
-        //    listWrites.Add(new DeleteManyModel<Message>(filterDefinition));
-        //    await _collection.BulkWriteAsync(listWrites);
-        //}
 
         private async Task ChatExistAsync(Guid chatId)
         {

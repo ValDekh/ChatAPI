@@ -19,7 +19,6 @@ namespace Chat.WebApi.Controllers
     [ApiController]
     public class ChatController : ControllerBase
     {
-
         private readonly IChatService _chatServices;
 
         public ChatController(IChatService chatServices)

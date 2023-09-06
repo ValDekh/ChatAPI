@@ -34,5 +34,15 @@ namespace Chat.Infrastructure.Repositories
             var filter = Builders<Message>.Filter.Eq(x => x.ChatId, chatId);
             return await _entityCollection.Find(filter).ToListAsync();
         }
+
+        public async Task<List<Message>> GetMessagesWithPaginationAsync(ObjectId chatId, int skip, int pageSize)
+        {
+            var filter = Builders<Message>.Filter.Eq(x => x.ChatId, chatId);
+            var messages = await _entityCollection.Find(filter)
+                .Skip(skip)
+                .Limit(pageSize)
+                .ToListAsync();
+            return messages;
+        }
     }
 }

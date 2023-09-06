@@ -12,5 +12,6 @@ namespace Chat.Domain.Interfaces
     {
         Task<List<Message>> GetAllAsync(ObjectId chatId);
         Task DeleteAllMessagesAsync(Guid chatId);
+        Task<List<Message>> GetMessagesWithPaginationAsync(ObjectId chatId, int skip, int pageSize);
     }
 }

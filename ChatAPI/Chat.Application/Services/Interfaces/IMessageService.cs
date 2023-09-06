@@ -17,6 +17,6 @@ namespace Chat.Application.Services.Interfaces
         Task<IEnumerable<MessageDTOResponse>> GetAllAsync(Guid chatId);
         Task<MessageDTOResponse> GetByIdAsync(Guid chatId, Guid id);
         Task UpdateAsync(Guid chatId,MessageDTORequest updateDTO, Guid id);
-      //  Task DeleteAllMessagesAsync(Guid chatId);
+        Task<List<MessageDTOResponse>> GetMessagesWithPaginationAsync(Guid chatId, int page);
     }
 }
