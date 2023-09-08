@@ -1,6 +1,4 @@
-﻿using Chat.Domain.Structures.Enums;
-using MongoDB.Bson;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,8 +8,7 @@ namespace Chat.Domain.Entities
 {
     public class Permission : BaseEntity
     {
-        public ObjectId UserId { get; set; }
-        public ObjectId ChatId { get; set; }
-        public PermissionsEnum permissions { get; set; }
+        public string Action { get; set; } = null!;
+        public bool CanPerform { get; set; }
     }
 }
