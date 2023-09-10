@@ -3,21 +3,10 @@ using Chat.Application.DTOs.Chat;
 using Chat.Application.EventHandlers.ChatEventHandlers;
 using Chat.Application.Services.Converters;
 using Chat.Application.Services.Interfaces;
-using Chat.Domain.Context;
 using Chat.Domain.Entities;
 using Chat.Domain.Exceptions;
 using Chat.Domain.Interfaces;
-using Chat.Infrastructure.Factories;
-using Chat.Infrastructure.Repositories;
-using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
-using MongoDB.Driver;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Chat.Infrastructure.Services
 {

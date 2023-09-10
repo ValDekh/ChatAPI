@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Chat.Application.Services.Converters
 {
-   public class ObjectIdGuidConverter
+   public static class ObjectIdGuidConverter
     {
         public static Guid ConvertObjectIdToGuid(ObjectId objectId)
         {

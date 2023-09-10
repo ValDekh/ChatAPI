@@ -14,11 +14,11 @@ using System.Threading.Tasks;
 
 namespace Chat.Application.EventHandlers.ChatEventHandlers
 {
-    public class ChatObserver
+    public class ChatDeleteObserver
     {
         private readonly IMessageRepository _messageRepository;
 
-        public ChatObserver(IMessageRepository messageRepository)
+        public ChatDeleteObserver(IMessageRepository messageRepository)
         {
             _messageRepository = messageRepository;
         }

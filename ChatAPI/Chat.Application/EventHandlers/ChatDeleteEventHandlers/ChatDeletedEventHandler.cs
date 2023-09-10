@@ -9,8 +9,8 @@ namespace Chat.Application.EventHandlers.ChatEventHandlers
 {
     public class ChatDeletedEventHandler : BaseEventHandler<ChatDeletedEventArgs>
     {
-        private readonly ChatObserver _chatDeleteObserver;
-        public ChatDeletedEventHandler(ChatObserver chatObserver)
+        private readonly ChatDeleteObserver _chatDeleteObserver;
+        public ChatDeletedEventHandler(ChatDeleteObserver chatObserver)
         {
            _chatDeleteObserver = chatObserver;
             OnCreate += _chatDeleteObserver.DeleteMessagesAsync;

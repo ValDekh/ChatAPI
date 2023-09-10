@@ -12,7 +12,9 @@ namespace Chat.Domain.Structures
         public const string CreateMessage = "create:message";
         public const string UpdateMessage = "update:message";
         public const string DeleteMessage = "delete:message";
+        public const string ReadUser = "get:contributor";
         public const string AddUser = "create:contributor";
+        public const string UpdateUser = "update:contributor";
         public const string DeleteUser = "delete:contributor";
         public static List<string> Admin = new(new[]
         {
@@ -20,7 +22,9 @@ namespace Chat.Domain.Structures
             CreateMessage,
             UpdateMessage,
             DeleteMessage,
+            ReadUser,
             AddUser,
+            UpdateUser,
             DeleteUser
         });
     }

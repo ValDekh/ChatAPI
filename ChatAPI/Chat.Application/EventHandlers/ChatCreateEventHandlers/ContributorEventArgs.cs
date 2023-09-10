@@ -5,13 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Chat.Domain.Entities
+namespace Chat.Application.EventHandlers.ChatCreateEventHandlers
 {
-    public class Contributor : BaseEntity
+    public class ContributorEventArgs 
     {
-
         public ObjectId UserId { get; set; }
         public ObjectId ChatId { get; set; }
-        public List<Permission> Permissions { get; set; }
     }
 }

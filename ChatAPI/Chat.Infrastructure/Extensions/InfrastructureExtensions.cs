@@ -50,8 +50,6 @@ namespace Chat.Infrastructure.Extensions
         private static void AddRepositories(this IServiceCollection services)
         {
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-            // services.AddScoped<IMessageRepository, MessageRepository>();
-            //  services.AddScoped<IChatRepository, ChatRepository>();
             services.AddScoped<IMessageRepository>(provider =>
            {
                var mongoCollectionFactory = provider.GetRequiredService<IMongoCollectionFactory>();
@@ -61,6 +59,11 @@ namespace Chat.Infrastructure.Extensions
             {
                 var mongoCollectionFactory = provider.GetRequiredService<IMongoCollectionFactory>();
                 return new ChatRepository(mongoCollectionFactory);
+            });
+            services.AddScoped<IContributorRepository>(provider =>
+            {
+                var mongoCollectionFactory = provider.GetRequiredService<IMongoCollectionFactory>();
+                return new ContributorRepository(mongoCollectionFactory);
             });
         }
 
