@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Chat.Domain.Exceptions
+namespace Chat.Domain.Exceptions.NotFound
 {
     public sealed class ChatNotFoundException : NotFoundException
     {

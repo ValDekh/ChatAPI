@@ -1,4 +1,4 @@
-﻿using Chat.Domain.Exceptions;
+﻿using Chat.Domain.Exceptions.NotFound;
 using System.Text.Json;
 
 namespace Chat.WebApi.Middlewares

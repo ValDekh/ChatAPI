@@ -17,15 +17,18 @@ namespace Chat.Application.EventHandlers.ChatEventHandlers
     public class ChatDeleteObserver
     {
         private readonly IMessageRepository _messageRepository;
+        private readonly IContributorRepository _contributorRepository;
 
-        public ChatDeleteObserver(IMessageRepository messageRepository)
+        public ChatDeleteObserver(IMessageRepository messageRepository, IContributorRepository contributorRepository)
         {
             _messageRepository = messageRepository;
+            _contributorRepository = contributorRepository;
         }
 
         public async void DeleteMessagesAsync(object sender, ChatDeletedEventArgs e)
         {
             await _messageRepository.DeleteAllMessagesAsync(e.ChatId);
+            await _contributorRepository.DeleteAllContributersAsync(e.ChatId);
 
         }
     }

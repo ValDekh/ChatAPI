@@ -2,7 +2,7 @@
 using Chat.Domain.Interfaces;
 using MongoDB.Bson;
 using MongoDB.Driver;
-
+using System.Linq.Expressions;
 
 namespace Chat.Infrastructure.Repositories
 {
@@ -35,6 +35,11 @@ namespace Chat.Infrastructure.Repositories
         public async Task DeleteAsync(ObjectId id)
         {
             await _entityCollection.DeleteOneAsync(x => x.Id == id);
+        }
+
+        public async Task<TEntity?> FindAsync(Expression<Func<TEntity, bool>> condition)
+        {
+            return await _entityCollection.Find(condition).FirstOrDefaultAsync();
         }
     }
 }

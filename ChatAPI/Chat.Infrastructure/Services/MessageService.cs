@@ -4,6 +4,7 @@ using Chat.Application.Services.Converters;
 using Chat.Application.Services.Interfaces;
 using Chat.Domain.Entities;
 using Chat.Domain.Exceptions;
+using Chat.Domain.Exceptions.NotFound;
 using Chat.Domain.Interfaces;
 using Chat.Infrastructure.Repositories;
 using MongoDB.Bson;
@@ -18,6 +19,7 @@ namespace Chat.Infrastructure.Services
         private readonly IMapper _mapper;
         private readonly IMessageRepository _messageRepository;
         private readonly IChatRepository _chatRepository;
+        private readonly IContributorRepository _contributorRepository;
         public MessageDTOResponse MessageDTO { get; set; }
         public MessageService(IMapper mapper,
             IMongoCollectionFactory mongoRepositoryFactory,
@@ -29,9 +31,17 @@ namespace Chat.Infrastructure.Services
             _chatRepository = chatRepository;
         }
 
-        public async Task<Message> CreateAsync(Guid chatId, MessageDTORequest gotDTO)
+        public async Task<Message> CreateAsync(Guid userId, Guid chatId, MessageDTORequest gotDTO)
         {
             await ChatExistAsync(chatId);
+            var objectIdUser = ObjectIdGuidConverter.ConvertGuidToObjectId(userId);
+            var contributor = await _contributorRepository.FindAsync(
+                x => x.ChatId == ObjectIdGuidConverter.ConvertGuidToObjectId(chatId) &&
+                x.UserId == objectIdUser);
+            if (contributor == null)
+            {
+                throw new InvalidOperationException();
+            }
             var newEntity = _mapper.Map<Message>(gotDTO);
             newEntity.ChatId = ObjectIdGuidConverter.ConvertGuidToObjectId(chatId);
             await _messageRepository.AddAsync(newEntity);

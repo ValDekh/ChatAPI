@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Chat.Application.EventHandlers.ChatCreateEventHandlers
+namespace Chat.Application.EventHandlers.ContributorCreateEventHandlers
 {
     public class ContributorCreateObserver
     {
@@ -17,7 +17,7 @@ namespace Chat.Application.EventHandlers.ChatCreateEventHandlers
             _contributorRepository = contributorRepository;
         }
 
-        public async void CreateContributor(object sender, ContributorEventArgs e)
+        public async void CreateContributor(object sender, ContributorCreateEventArgs e)
         {
             var contributor = new Contributor()
             {

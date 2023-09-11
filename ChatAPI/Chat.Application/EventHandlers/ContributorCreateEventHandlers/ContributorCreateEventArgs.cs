@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Chat.Application.EventHandlers.ChatCreateEventHandlers
+namespace Chat.Application.EventHandlers.ContributorCreateEventHandlers
 {
-    public class ContributorEventArgs 
+    public class ContributorCreateEventArgs : EventArgs 
     {
         public ObjectId UserId { get; set; }
         public ObjectId ChatId { get; set; }

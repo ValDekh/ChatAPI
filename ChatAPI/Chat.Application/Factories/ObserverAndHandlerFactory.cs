@@ -24,7 +24,8 @@ namespace Chat.Application.Factories
         {
             using var scope = _serviceProvider.CreateScope();
             var messageRepository = scope.ServiceProvider.GetRequiredService<IMessageRepository>();
-            return new ChatDeleteObserver(messageRepository);
+            var contributorRepository = scope.ServiceProvider.GetRequiredService<IContributorRepository>();
+            return new ChatDeleteObserver(messageRepository,contributorRepository);
         }
 
         public ChatDeletedEventHandler CreateEventHandler()

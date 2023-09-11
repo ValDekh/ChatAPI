@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
 using Chat.Application.DTOs.Chat;
 using Chat.Application.EventHandlers.ChatEventHandlers;
+using Chat.Application.EventHandlers.ContributorCreateEventHandlers;
 using Chat.Application.Services.Converters;
 using Chat.Application.Services.Interfaces;
 using Chat.Domain.Entities;
 using Chat.Domain.Exceptions;
+using Chat.Domain.Exceptions.NotFound;
 using Chat.Domain.Interfaces;
 using MongoDB.Bson;
 
@@ -15,19 +17,31 @@ namespace Chat.Infrastructure.Services
     {
         private readonly IMapper _mapper;
         private readonly IChatRepository _repository;
-        public readonly ChatDeletedEventHandler _chatDeletedEvent;
+        private readonly ChatDeletedEventHandler _chatDeletedEvent;
+        private readonly ContributorCreatedEventHandler _contributorCreatedEventHandler;
+
         public ChatDTOResponse ChatDTOResponse { get; set; }
-        public ChatService(IMapper mapper, IChatRepository chatRepository, ChatDeletedEventHandler chatDeletedEventHandler)
+        public ChatService(IMapper mapper,
+            IChatRepository chatRepository,
+            ChatDeletedEventHandler chatDeletedEventHandler,
+            ContributorCreatedEventHandler contributorCreatedEventHandler)
         {
             _mapper = mapper;
             _repository = chatRepository;
             _chatDeletedEvent = chatDeletedEventHandler;
+            _contributorCreatedEventHandler = contributorCreatedEventHandler;
         }
 
         public async Task<ChatEntity> CreateAsync(ChatDTORequest ChatDTORequest)
         {
             var newEntity = _mapper.Map<ChatEntity>(ChatDTORequest);
             await _repository.AddAsync(newEntity);
+            var userChatOwnerId = newEntity.Users.FirstOrDefault();
+            _contributorCreatedEventHandler.CreateInvoke(new ContributorCreateEventArgs()
+            {
+                ChatId = newEntity.Id,
+                UserId = userChatOwnerId
+            });
             ChatDTOResponse = _mapper.Map<ChatDTOResponse>(newEntity);
             return newEntity;
         }
