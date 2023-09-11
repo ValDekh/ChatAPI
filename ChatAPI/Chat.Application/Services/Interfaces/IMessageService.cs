@@ -12,8 +12,8 @@ namespace Chat.Application.Services.Interfaces
     public interface IMessageService
     {
         public MessageDTOResponse MessageDTO { get; set; }
-        Task<Message> CreateAsync(Guid UserId, Guid chatId, MessageDTORequest gotDTO);
-        Task DeleteAsync(Guid chatId, Guid id);
+        Task<Message> CreateAsync(Guid userId, Guid chatId, MessageDTORequest gotDTO);
+        Task DeleteAsync(Guid userId, Guid chatId, Guid id);
         Task<IEnumerable<MessageDTOResponse>> GetAllAsync(Guid chatId);
         Task<MessageDTOResponse> GetByIdAsync(Guid chatId, Guid id);
         Task UpdateAsync(Guid chatId,MessageDTORequest updateDTO, Guid id);

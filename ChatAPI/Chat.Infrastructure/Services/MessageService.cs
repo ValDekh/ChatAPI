@@ -4,12 +4,16 @@ using Chat.Application.Services.Converters;
 using Chat.Application.Services.Interfaces;
 using Chat.Domain.Entities;
 using Chat.Domain.Exceptions;
+using Chat.Domain.Exceptions.ForbiddenException;
 using Chat.Domain.Exceptions.NotFound;
+using Chat.Domain.Helpers;
 using Chat.Domain.Interfaces;
+using Chat.Domain.Structures;
 using Chat.Infrastructure.Repositories;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using System;
+using System.Net;
 
 namespace Chat.Infrastructure.Services
 {
@@ -22,40 +26,55 @@ namespace Chat.Infrastructure.Services
         private readonly IContributorRepository _contributorRepository;
         public MessageDTOResponse MessageDTO { get; set; }
         public MessageService(IMapper mapper,
-            IMongoCollectionFactory mongoRepositoryFactory,
             IMessageRepository messageRepository,
-            IChatRepository chatRepository)
+            IChatRepository chatRepository,
+            IContributorRepository contributorRepository)
         {
             _mapper = mapper;
             _messageRepository = messageRepository;
             _chatRepository = chatRepository;
+            _contributorRepository = contributorRepository;
         }
 
         public async Task<Message> CreateAsync(Guid userId, Guid chatId, MessageDTORequest gotDTO)
         {
             await ChatExistAsync(chatId);
             var objectIdUser = ObjectIdGuidConverter.ConvertGuidToObjectId(userId);
-            var contributor = await _contributorRepository.FindAsync(
-                x => x.ChatId == ObjectIdGuidConverter.ConvertGuidToObjectId(chatId) &&
-                x.UserId == objectIdUser);
+            var objectIdChat = ObjectIdGuidConverter.ConvertGuidToObjectId(chatId);
+            var contributor = await _contributorRepository.FindAsync(x => x.ChatId == objectIdChat && x.UserId == objectIdUser);
             if (contributor == null)
             {
-                throw new InvalidOperationException();
+                throw new ContributorNotFoundException(userId);
+            }
+            if (!PermissionHelper.HasPermission(contributor.Permissions,Permissions.CreateMessage))
+            {
+                throw ForbiddenException.Default(userId);
             }
             var newEntity = _mapper.Map<Message>(gotDTO);
-            newEntity.ChatId = ObjectIdGuidConverter.ConvertGuidToObjectId(chatId);
+            newEntity.ChatId = objectIdChat;
             await _messageRepository.AddAsync(newEntity);
             MessageDTO = _mapper.Map<MessageDTOResponse>(newEntity);
             return newEntity;
         }
 
-        public async Task DeleteAsync(Guid chatId, Guid id)
+        public async Task DeleteAsync(Guid userId, Guid chatId, Guid id)
         {
             await ChatExistAsync(chatId);
             ObjectId objectId = ObjectIdGuidConverter.ConvertGuidToObjectId(id);
             if (!ObjectId.TryParse(objectId.ToString(), out _))
             {
                 throw new InvalidDataException("Invalid format.");
+            }
+            var objectIdUser = ObjectIdGuidConverter.ConvertGuidToObjectId(userId);
+            var objectIdChat = ObjectIdGuidConverter.ConvertGuidToObjectId(chatId);
+            var contributor = await _contributorRepository.FindAsync(x => x.ChatId == objectIdChat && x.UserId == objectIdUser);
+            if (contributor == null)
+            {
+                throw new ContributorNotFoundException(userId);
+            }
+            if (!PermissionHelper.HasPermission(contributor.Permissions, Permissions.DeleteMessage))
+            {
+                throw ForbiddenException.Default(userId);
             }
             var entity = await _messageRepository.GetByIdAsync(objectId);
             if (entity is null)

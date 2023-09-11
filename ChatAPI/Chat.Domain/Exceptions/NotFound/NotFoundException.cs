@@ -12,5 +12,15 @@ namespace Chat.Domain.Exceptions.NotFound
             : base(message)
         {
         }
+
+        public int StatusCode { get; } = 404;
+
+        public override string Message
+        {
+            get
+            {
+                return $"Status Code: {StatusCode}, {base.Message}";
+            }
+        }
     }
 }

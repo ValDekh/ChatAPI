@@ -15,6 +15,14 @@ namespace Chat.Domain.Exceptions.ForbiddenException
             StatusCode = (int)statusCode;
         }
 
+        public override string Message
+        {
+            get
+            {
+                return $"Status Code: {StatusCode}, {base.Message}";
+            }
+        }
+
         public static ForbiddenException Default(Guid userId)
         {
             return new ForbiddenException(HttpStatusCode.Forbidden, userId);
