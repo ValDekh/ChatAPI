@@ -76,7 +76,7 @@ namespace Chat.Infrastructure.Extensions
         {
             services.AddScoped<IChatService, ChatService>();
             services.AddScoped<IMessageService, MessageService>();
-            //TODO Add contributor service
+            services.AddScoped<IContributorService, ContributorService>();
         }
     }
 }

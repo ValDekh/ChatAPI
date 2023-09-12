@@ -2,6 +2,7 @@
 using Chat.Application.DTOs.Contributer;
 using Chat.Application.DTOs.Message;
 using Chat.Application.Services.Converters;
+using Chat.Application.Services.Interfaces;
 using Chat.Domain.Entities;
 using Chat.Domain.Exceptions.ForbiddenException;
 using Chat.Domain.Exceptions.NotFound;
@@ -18,21 +19,26 @@ using System.Threading.Tasks;
 
 namespace Chat.Infrastructure.Services
 {
-    public class ContributorService
+    public class ContributorService : IContributorService
     {
         private readonly IMapper _mapper;
         private readonly IChatRepository _chatRepository;
         private readonly IContributorRepository _contributorRepository;
         public ContributorDTOResponse ContributorDTOResponse { get; set; }
 
-        public ContributorService(IMapper mapper, IChatRepository chatRepository, IContributorRepository contributorRepository)
+        public ContributorService(IMapper mapper,
+            IChatRepository chatRepository,
+            IContributorRepository contributorRepository)
         {
             _mapper = mapper;
             _chatRepository = chatRepository;
             _contributorRepository = contributorRepository;
         }
 
-        public async Task<Contributor> AddContributorAsync(Guid chatId, Guid ownerId, ContributorDTORequest contributorDTORequest )
+        public async Task<Contributor> AddContributorAsync(
+            Guid chatId,
+            Guid ownerId,
+            ContributorDTORequest contributorDTORequest)
         {
             await ChatExistAsync(chatId);
             var objectIdOwner = ObjectIdGuidConverter.ConvertGuidToObjectId(ownerId);
@@ -51,7 +57,7 @@ namespace Chat.Infrastructure.Services
 
             var newContributor = _mapper.Map<Contributor>(contributorDTORequest);
             newContributor.ChatId = objectIdChat;
-            
+
             await _contributorRepository.AddAsync(newContributor);
             ContributorDTOResponse = _mapper.Map<ContributorDTOResponse>(newContributor);
             return newContributor;
@@ -60,11 +66,12 @@ namespace Chat.Infrastructure.Services
         public async Task DeleteAsync(Guid chatId, Guid ownerId, Guid userId)
         {
             await ChatExistAsync(chatId);
-            
+
             var objectIdOwner = ObjectIdGuidConverter.ConvertGuidToObjectId(ownerId);
             var objectIdChat = ObjectIdGuidConverter.ConvertGuidToObjectId(chatId);
             var objectIdUser = ObjectIdGuidConverter.ConvertGuidToObjectId(userId);
-            var contributor = await _contributorRepository.FindAsync(x => x.ChatId == objectIdChat && x.UserId == objectIdOwner);
+            var contributor = await _contributorRepository
+                .FindAsync(x => x.ChatId == objectIdChat && x.UserId == objectIdOwner);
             if (contributor == null)
             {
                 throw new ContributorNotFoundException(ownerId);
@@ -74,10 +81,10 @@ namespace Chat.Infrastructure.Services
             {
                 throw ForbiddenException.Default(ownerId);
             }
-            var entity = await _contributorRepository.GetByIdAsync(objectIdUser);
+            var entity = await _contributorRepository.FindAsync(x => x.ChatId == objectIdChat && x.UserId == objectIdUser);
             if (entity is null)
             {
-                throw new MessageNotFoundException(userId);
+                throw new ContributorNotFoundException(userId);
             }
 
             await _contributorRepository.DeleteAsync(entity.Id);
@@ -89,7 +96,8 @@ namespace Chat.Infrastructure.Services
 
             var objectIdOwner = ObjectIdGuidConverter.ConvertGuidToObjectId(ownerId);
             var objectIdChat = ObjectIdGuidConverter.ConvertGuidToObjectId(chatId);
-            var contributor = await _contributorRepository.FindAsync(x => x.ChatId == objectIdChat && x.UserId == objectIdOwner);
+            var contributor = await _contributorRepository
+                .FindAsync(x => x.ChatId == objectIdChat && x.UserId == objectIdOwner);
             if (contributor == null)
             {
                 throw new ContributorNotFoundException(ownerId);
@@ -104,24 +112,25 @@ namespace Chat.Infrastructure.Services
             return contributorDTOsResponse;
         }
 
-        public async Task<ContributorDTOResponse> GetByIdAsync(Guid chatId, Guid ownerId, Guid userId)
+        public async Task<ContributorDTOResponse> GetByUserIdAsync(Guid chatId, Guid ownerId, Guid userId)
         {
             await ChatExistAsync(chatId);
-            
+
             var objectIdOwner = ObjectIdGuidConverter.ConvertGuidToObjectId(ownerId);
             var objectIdChat = ObjectIdGuidConverter.ConvertGuidToObjectId(chatId);
             var objectIdUser = ObjectIdGuidConverter.ConvertGuidToObjectId(userId);
-            var contributor = await _contributorRepository.FindAsync(x => x.ChatId == objectIdChat && x.UserId == objectIdOwner);
+            var contributor = await _contributorRepository
+                .FindAsync(x => x.ChatId == objectIdChat && x.UserId == objectIdOwner);
             if (contributor == null)
             {
                 throw new ContributorNotFoundException(ownerId);
             }
-            if (!PermissionHelper.HasPermission(contributor.Permissions, Permissions.ReadMessage))
+            if (!PermissionHelper.HasPermission(contributor.Permissions, Permissions.ReadContributor))
             {
                 throw ForbiddenException.Default(ownerId);
             }
 
-            var entity = await _contributorRepository.GetByIdAsync(objectIdUser);
+            var entity = await _contributorRepository.FindAsync(x => x.ChatId == objectIdChat && x.UserId == objectIdUser);
             if (entity is null)
             {
                 throw new ContributorNotFoundException(ownerId);
@@ -131,34 +140,34 @@ namespace Chat.Infrastructure.Services
             return contributorDTOResponce;
         }
 
-        public async Task UpdateAsync(Guid chatId, Guid ownerId, Guid userId, ContributorDTORequest newPermissionForExistContrib, Guid id)
+        public async Task UpdateAsync(Guid chatId,
+            Guid ownerId, ContributorDTORequest newPermissionForExistContrib)
         {
             await ChatExistAsync(chatId);
-            ObjectId objectId = ObjectIdGuidConverter.ConvertGuidToObjectId(id);
-            if (!ObjectId.TryParse(objectId.ToString(), out _))
-            {
-                throw new InvalidDataException("Invalid format.");
-            }
-            var objectIdUser = ObjectIdGuidConverter.ConvertGuidToObjectId(userId);
+
+            var objectIdOwner = ObjectIdGuidConverter.ConvertGuidToObjectId(ownerId);
             var objectIdChat = ObjectIdGuidConverter.ConvertGuidToObjectId(chatId);
-            var contributor = await _contributorRepository.FindAsync(x => x.ChatId == objectIdChat && x.UserId == objectIdUser);
+            var objectIdUser = ObjectIdGuidConverter.ConvertGuidToObjectId(newPermissionForExistContrib.UserId);
+            var contributor = await _contributorRepository
+                .FindAsync(x => x.ChatId == objectIdChat && x.UserId == objectIdOwner);
             if (contributor == null)
             {
-                throw new ContributorNotFoundException(userId);
+                throw new ContributorNotFoundException(ownerId);
             }
-            if (!PermissionHelper.HasPermission(contributor.Permissions, Permissions.UpdateMessage))
+            if (!PermissionHelper.HasPermission(contributor.Permissions, Permissions.UpdateContributor))
             {
-                throw ForbiddenException.Default(userId);
+                throw ForbiddenException.Default(ownerId);
             }
-            var oldEntity = await _messageRepository.GetByIdAsync(objectId);
+            var oldEntity = await _contributorRepository.FindAsync(x => x.ChatId == objectIdChat &&
+                   x.UserId == objectIdUser);
             if (oldEntity is null)
             {
-                throw new MessageNotFoundException(id);
+                throw new ContributorNotFoundException(newPermissionForExistContrib.UserId);
             }
-            var updateEntity = _mapper.Map<Message>(newPermissionForExistContrib);
+            var updateEntity = _mapper.Map<Contributor>(newPermissionForExistContrib);
             updateEntity.Id = oldEntity.Id;
             updateEntity.ChatId = oldEntity.ChatId;
-            await _messageRepository.UpdateAsync(objectId, updateEntity);
+            await _contributorRepository.UpdateAsync(updateEntity.Id, updateEntity);
         }
 
         private async Task ChatExistAsync(Guid chatId)
