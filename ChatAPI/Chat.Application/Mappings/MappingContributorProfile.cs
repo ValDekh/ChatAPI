@@ -18,24 +18,14 @@ namespace Chat.Application.Mappings
             CreateMap<ContributorDTORequest, Contributor>()
              .ForMember(dest => dest.UserId, opt => opt.MapFrom(src =>
                     ObjectIdGuidConverter.ConvertGuidToObjectId(src.UserId)))
-             .ForMember(dest => dest.Permissions, opt => opt.MapFrom(src => MapPermissions(src.permissions)));
+             .ForMember(dest => dest.Permissions, opt => opt.MapFrom(src => src.GetSelectedPermissions()));
 
             CreateMap<Contributor, ContributorDTOResponse>()
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => ObjectIdGuidConverter.ConvertObjectIdToGuid(src.Id)))
             .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => ObjectIdGuidConverter.ConvertObjectIdToGuid(src.UserId)))
             .ForMember(dest => dest.ChatId, opt => opt.MapFrom(src => ObjectIdGuidConverter.ConvertObjectIdToGuid(src.ChatId)))
-            .ForMember(dest => dest.permissions, opt => opt
-                .MapFrom(src => src.Permissions.Select(permission => permission.Action).ToList()));
+            .ForMember(dest => dest.Permissions, opt => opt.MapFrom(src => src.Permissions));
 
-        }
-
-        private List<Permission> MapPermissions(List<string> permissionStrings)
-        {
-            return permissionStrings.Select(action => new Permission
-            {
-                Action = action,
-                CanPerform = true
-            }).ToList();
         }
     }
 }

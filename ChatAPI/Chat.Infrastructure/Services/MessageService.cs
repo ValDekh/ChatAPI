@@ -46,7 +46,7 @@ namespace Chat.Infrastructure.Services
             {
                 throw new ContributorNotFoundException(userId);
             }
-            if (!PermissionHelper.HasPermission(contributor.Permissions,Permissions.CreateMessage))
+            if (!PermissionHelper.HasPermission(contributor.Permissions, Permissions.CreateMessage))
             {
                 throw ForbiddenException.Default(userId);
             }
@@ -57,7 +57,7 @@ namespace Chat.Infrastructure.Services
             return newEntity;
         }
 
-        public async Task DeleteAsync(Guid userId, Guid chatId, Guid id)
+        public async Task DeleteAsync(Guid chatId, Guid userId, Guid id)
         {
             await ChatExistAsync(chatId);
             ObjectId objectId = ObjectIdGuidConverter.ConvertGuidToObjectId(id);
@@ -84,7 +84,7 @@ namespace Chat.Infrastructure.Services
             await _messageRepository.DeleteAsync(objectId);
         }
 
-        public async Task<List<MessageDTOResponse>> GetMessagesWithPaginationAsync(Guid chatId, int page)
+        public async Task<List<MessageDTOResponse>> GetMessagesWithPaginationAsync(Guid chatId, Guid userId, int page)
         {
             const int pageSize = 10;
             await ChatExistAsync(chatId);
@@ -93,32 +93,66 @@ namespace Chat.Infrastructure.Services
             {
                 throw new InvalidDataException("Invalid format.");
             }
+            var objectIdUser = ObjectIdGuidConverter.ConvertGuidToObjectId(userId);
+            var objectIdChat = ObjectIdGuidConverter.ConvertGuidToObjectId(chatId);
+            var contributor = await _contributorRepository.FindAsync(x => x.ChatId == objectIdChat && x.UserId == objectIdUser);
+            if (contributor == null)
+            {
+                throw new ContributorNotFoundException(userId);
+            }
+            if (!PermissionHelper.HasPermission(contributor.Permissions, Permissions.ReadMessage))
+            {
+                throw ForbiddenException.Default(userId);
+            }
             var skip = (page - 1) * pageSize;
             var messages = await _messageRepository.GetMessagesWithPaginationAsync(objectId, skip, pageSize);
             var messageDTOs = _mapper.Map<List<MessageDTOResponse>>(messages);
             return messageDTOs;
         }
 
-        public async Task<IEnumerable<MessageDTOResponse>> GetAllAsync(Guid chatId)
+        public async Task<IEnumerable<MessageDTOResponse>> GetAllAsync(Guid chatId, Guid userId)
         {
+            await ChatExistAsync(chatId);
             ObjectId chatObjectId = ObjectIdGuidConverter.ConvertGuidToObjectId(chatId);
             if (!ObjectId.TryParse(chatObjectId.ToString(), out _))
             {
                 throw new InvalidDataException("Invalid format.");
             }
+            var objectIdUser = ObjectIdGuidConverter.ConvertGuidToObjectId(userId);
+            var objectIdChat = ObjectIdGuidConverter.ConvertGuidToObjectId(chatId);
+            var contributor = await _contributorRepository.FindAsync(x => x.ChatId == objectIdChat && x.UserId == objectIdUser);
+            if (contributor == null)
+            {
+                throw new ContributorNotFoundException(userId);
+            }
+            if (!PermissionHelper.HasPermission(contributor.Permissions, Permissions.ReadMessage))
+            {
+                throw ForbiddenException.Default(userId);
+            }
             var entities = await _messageRepository.GetAllAsync(chatObjectId);
-            await ChatExistAsync(chatId);
+            
             var gotDTO = _mapper.Map<IEnumerable<MessageDTOResponse>>(entities);
             return gotDTO;
         }
 
-        public async Task<MessageDTOResponse> GetByIdAsync(Guid chatId, Guid id)
+        public async Task<MessageDTOResponse> GetByIdAsync(Guid chatId, Guid userId, Guid id)
         {
             await ChatExistAsync(chatId);
             ObjectId objectId = ObjectIdGuidConverter.ConvertGuidToObjectId(id);
             if (!ObjectId.TryParse(objectId.ToString(), out _))
             {
                 throw new InvalidDataException("Invalid format.");
+            }
+            var objectIdUser = ObjectIdGuidConverter.ConvertGuidToObjectId(userId);
+            var objectIdChat = ObjectIdGuidConverter.ConvertGuidToObjectId(chatId);
+            var contributor = await _contributorRepository.FindAsync(x => x.ChatId == objectIdChat && x.UserId == objectIdUser);
+            if (contributor == null)
+            {
+                throw new ContributorNotFoundException(userId);
+            }
+            if (!PermissionHelper.HasPermission(contributor.Permissions, Permissions.ReadMessage))
+            {
+                throw ForbiddenException.Default(userId);
             }
             var entity = await _messageRepository.GetByIdAsync(objectId);
             if (entity is null)
@@ -129,13 +163,24 @@ namespace Chat.Infrastructure.Services
             return gotDTO;
         }
 
-        public async Task UpdateAsync(Guid chatId, MessageDTORequest updateDTO, Guid id)
+        public async Task UpdateAsync(Guid chatId, Guid userId, MessageDTORequest updateDTO, Guid id)
         {
             await ChatExistAsync(chatId);
             ObjectId objectId = ObjectIdGuidConverter.ConvertGuidToObjectId(id);
             if (!ObjectId.TryParse(objectId.ToString(), out _))
             {
                 throw new InvalidDataException("Invalid format.");
+            }
+            var objectIdUser = ObjectIdGuidConverter.ConvertGuidToObjectId(userId);
+            var objectIdChat = ObjectIdGuidConverter.ConvertGuidToObjectId(chatId);
+            var contributor = await _contributorRepository.FindAsync(x => x.ChatId == objectIdChat && x.UserId == objectIdUser);
+            if (contributor == null)
+            {
+                throw new ContributorNotFoundException(userId);
+            }
+            if (!PermissionHelper.HasPermission(contributor.Permissions, Permissions.UpdateMessage))
+            {
+                throw ForbiddenException.Default(userId);
             }
             var oldEntity = await _messageRepository.GetByIdAsync(objectId);
             if (oldEntity is null)
