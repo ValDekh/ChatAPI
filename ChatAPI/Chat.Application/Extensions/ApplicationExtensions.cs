@@ -26,9 +26,13 @@ namespace Chat.Application.Extensions
         {
             services.AddSingleton<ObserverAndHandlerFactory>();
             services.AddSingleton(provider =>
-                provider.GetRequiredService<ObserverAndHandlerFactory>().CreateObserver());
+                provider.GetRequiredService<ObserverAndHandlerFactory>().CreateChatObserver());
             services.AddSingleton(provider =>
-                provider.GetRequiredService<ObserverAndHandlerFactory>().CreateEventHandler());
+                provider.GetRequiredService<ObserverAndHandlerFactory>().CreateChatEventHandler());
+            services.AddSingleton(provider =>
+                provider.GetRequiredService<ObserverAndHandlerFactory>().CreateContributorObserver());
+            services.AddSingleton(provider =>
+                provider.GetRequiredService<ObserverAndHandlerFactory>().CreateContributorEventHandler());
             return services;
         }
     }

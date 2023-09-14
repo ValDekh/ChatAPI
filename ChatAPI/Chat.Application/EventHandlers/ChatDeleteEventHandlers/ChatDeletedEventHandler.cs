@@ -13,7 +13,7 @@ namespace Chat.Application.EventHandlers.ChatEventHandlers
         public ChatDeletedEventHandler(ChatDeleteObserver chatObserver)
         {
            _chatDeleteObserver = chatObserver;
-            OnCreate += _chatDeleteObserver.DeleteMessagesAsync;
+            OnCreate += _chatDeleteObserver.DeleteMessagesAndContribAsync;
         }
     }
 }

@@ -25,7 +25,7 @@ namespace Chat.Application.EventHandlers.ChatEventHandlers
             _contributorRepository = contributorRepository;
         }
 
-        public async void DeleteMessagesAsync(object sender, ChatDeletedEventArgs e)
+        public async void DeleteMessagesAndContribAsync(object sender, ChatDeletedEventArgs e)
         {
             await _messageRepository.DeleteAllMessagesAsync(e.ChatId);
             await _contributorRepository.DeleteAllContributersAsync(e.ChatId);

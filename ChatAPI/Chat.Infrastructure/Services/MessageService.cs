@@ -24,7 +24,7 @@ namespace Chat.Infrastructure.Services
         private readonly IMessageRepository _messageRepository;
         private readonly IChatRepository _chatRepository;
         private readonly IContributorRepository _contributorRepository;
-        public MessageDTOResponse MessageDTO { get; set; }
+        public MessageDTOResponse MessageDTO { get; set; } = null!;
         public MessageService(IMapper mapper,
             IMessageRepository messageRepository,
             IChatRepository chatRepository,
@@ -36,22 +36,18 @@ namespace Chat.Infrastructure.Services
             _contributorRepository = contributorRepository;
         }
 
-        public async Task<Message> CreateAsync(Guid userId, Guid chatId, MessageDTORequest gotDTO)
+        public async Task<Message> CreateAsync(Guid chatId, Guid userId, MessageDTORequest gotDTO)
         {
             await ChatExistAsync(chatId);
             var objectIdUser = ObjectIdGuidConverter.ConvertGuidToObjectId(userId);
             var objectIdChat = ObjectIdGuidConverter.ConvertGuidToObjectId(chatId);
-            var contributor = await _contributorRepository.FindAsync(x => x.ChatId == objectIdChat && x.UserId == objectIdUser);
-            if (contributor == null)
-            {
-                throw new ContributorNotFoundException(userId);
-            }
-            if (!PermissionHelper.HasPermission(contributor.Permissions, Permissions.CreateMessage))
-            {
-                throw ForbiddenException.Default(userId);
-            }
+
+            await IsOwnerHasPermission(objectIdChat, objectIdUser, Permissions.CreateMessage);
+
             var newEntity = _mapper.Map<Message>(gotDTO);
             newEntity.ChatId = objectIdChat;
+            newEntity.CreatedBy = objectIdUser;
+
             await _messageRepository.AddAsync(newEntity);
             MessageDTO = _mapper.Map<MessageDTOResponse>(newEntity);
             return newEntity;
@@ -61,21 +57,12 @@ namespace Chat.Infrastructure.Services
         {
             await ChatExistAsync(chatId);
             ObjectId objectId = ObjectIdGuidConverter.ConvertGuidToObjectId(id);
-            if (!ObjectId.TryParse(objectId.ToString(), out _))
-            {
-                throw new InvalidDataException("Invalid format.");
-            }
+            
             var objectIdUser = ObjectIdGuidConverter.ConvertGuidToObjectId(userId);
             var objectIdChat = ObjectIdGuidConverter.ConvertGuidToObjectId(chatId);
-            var contributor = await _contributorRepository.FindAsync(x => x.ChatId == objectIdChat && x.UserId == objectIdUser);
-            if (contributor == null)
-            {
-                throw new ContributorNotFoundException(userId);
-            }
-            if (!PermissionHelper.HasPermission(contributor.Permissions, Permissions.DeleteMessage))
-            {
-                throw ForbiddenException.Default(userId);
-            }
+
+            await IsOwnerHasPermission(objectIdChat, objectIdUser, Permissions.DeleteMessage);
+
             var entity = await _messageRepository.GetByIdAsync(objectId);
             if (entity is null)
             {
@@ -87,23 +74,14 @@ namespace Chat.Infrastructure.Services
         public async Task<List<MessageDTOResponse>> GetMessagesWithPaginationAsync(Guid chatId, Guid userId, int page)
         {
             const int pageSize = 10;
+
             await ChatExistAsync(chatId);
             ObjectId objectId = ObjectIdGuidConverter.ConvertGuidToObjectId(chatId);
-            if (!ObjectId.TryParse(objectId.ToString(), out _))
-            {
-                throw new InvalidDataException("Invalid format.");
-            }
             var objectIdUser = ObjectIdGuidConverter.ConvertGuidToObjectId(userId);
             var objectIdChat = ObjectIdGuidConverter.ConvertGuidToObjectId(chatId);
-            var contributor = await _contributorRepository.FindAsync(x => x.ChatId == objectIdChat && x.UserId == objectIdUser);
-            if (contributor == null)
-            {
-                throw new ContributorNotFoundException(userId);
-            }
-            if (!PermissionHelper.HasPermission(contributor.Permissions, Permissions.ReadMessage))
-            {
-                throw ForbiddenException.Default(userId);
-            }
+
+            await IsOwnerHasPermission(objectIdChat, objectIdUser, Permissions.ReadMessage);
+
             var skip = (page - 1) * pageSize;
             var messages = await _messageRepository.GetMessagesWithPaginationAsync(objectId, skip, pageSize);
             var messageDTOs = _mapper.Map<List<MessageDTOResponse>>(messages);
@@ -114,21 +92,11 @@ namespace Chat.Infrastructure.Services
         {
             await ChatExistAsync(chatId);
             ObjectId chatObjectId = ObjectIdGuidConverter.ConvertGuidToObjectId(chatId);
-            if (!ObjectId.TryParse(chatObjectId.ToString(), out _))
-            {
-                throw new InvalidDataException("Invalid format.");
-            }
             var objectIdUser = ObjectIdGuidConverter.ConvertGuidToObjectId(userId);
             var objectIdChat = ObjectIdGuidConverter.ConvertGuidToObjectId(chatId);
-            var contributor = await _contributorRepository.FindAsync(x => x.ChatId == objectIdChat && x.UserId == objectIdUser);
-            if (contributor == null)
-            {
-                throw new ContributorNotFoundException(userId);
-            }
-            if (!PermissionHelper.HasPermission(contributor.Permissions, Permissions.ReadMessage))
-            {
-                throw ForbiddenException.Default(userId);
-            }
+
+            await IsOwnerHasPermission(objectIdChat, objectIdUser, Permissions.ReadMessage);
+
             var entities = await _messageRepository.GetAllAsync(chatObjectId);
             
             var gotDTO = _mapper.Map<IEnumerable<MessageDTOResponse>>(entities);
@@ -139,21 +107,11 @@ namespace Chat.Infrastructure.Services
         {
             await ChatExistAsync(chatId);
             ObjectId objectId = ObjectIdGuidConverter.ConvertGuidToObjectId(id);
-            if (!ObjectId.TryParse(objectId.ToString(), out _))
-            {
-                throw new InvalidDataException("Invalid format.");
-            }
             var objectIdUser = ObjectIdGuidConverter.ConvertGuidToObjectId(userId);
             var objectIdChat = ObjectIdGuidConverter.ConvertGuidToObjectId(chatId);
-            var contributor = await _contributorRepository.FindAsync(x => x.ChatId == objectIdChat && x.UserId == objectIdUser);
-            if (contributor == null)
-            {
-                throw new ContributorNotFoundException(userId);
-            }
-            if (!PermissionHelper.HasPermission(contributor.Permissions, Permissions.ReadMessage))
-            {
-                throw ForbiddenException.Default(userId);
-            }
+
+            await IsOwnerHasPermission(objectIdChat, objectIdUser, Permissions.ReadMessage);
+
             var entity = await _messageRepository.GetByIdAsync(objectId);
             if (entity is null)
             {
@@ -167,21 +125,11 @@ namespace Chat.Infrastructure.Services
         {
             await ChatExistAsync(chatId);
             ObjectId objectId = ObjectIdGuidConverter.ConvertGuidToObjectId(id);
-            if (!ObjectId.TryParse(objectId.ToString(), out _))
-            {
-                throw new InvalidDataException("Invalid format.");
-            }
             var objectIdUser = ObjectIdGuidConverter.ConvertGuidToObjectId(userId);
             var objectIdChat = ObjectIdGuidConverter.ConvertGuidToObjectId(chatId);
-            var contributor = await _contributorRepository.FindAsync(x => x.ChatId == objectIdChat && x.UserId == objectIdUser);
-            if (contributor == null)
-            {
-                throw new ContributorNotFoundException(userId);
-            }
-            if (!PermissionHelper.HasPermission(contributor.Permissions, Permissions.UpdateMessage))
-            {
-                throw ForbiddenException.Default(userId);
-            }
+
+            await IsOwnerHasPermission(objectIdChat, objectIdUser, Permissions.UpdateMessage);
+
             var oldEntity = await _messageRepository.GetByIdAsync(objectId);
             if (oldEntity is null)
             {
@@ -190,6 +138,7 @@ namespace Chat.Infrastructure.Services
             var updateEntity = _mapper.Map<Message>(updateDTO);
             updateEntity.Id = oldEntity.Id;
             updateEntity.ChatId = oldEntity.ChatId;
+            updateEntity.UpdatedBy = objectIdUser;
             await _messageRepository.UpdateAsync(objectId, updateEntity);
         }
 
@@ -204,6 +153,20 @@ namespace Chat.Infrastructure.Services
             if (chat is null)
             {
                 throw new ChatNotFoundException(chatId);
+            }
+        }
+
+        private async Task IsOwnerHasPermission(ObjectId chatId, ObjectId ownerId, string action)
+        {
+            var contributor = await _contributorRepository
+               .FindAsync(x => x.ChatId == chatId && x.UserId == ownerId);
+            if (contributor == null)
+            {
+                throw new ContributorNotFoundException(ObjectIdGuidConverter.ConvertObjectIdToGuid(ownerId));
+            }
+            if (!PermissionHelper.HasPermission(contributor.Permissions, action))
+            {
+                throw ForbiddenException.Default(ObjectIdGuidConverter.ConvertObjectIdToGuid(ownerId));
             }
         }
     }

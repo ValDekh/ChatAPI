@@ -19,7 +19,7 @@ namespace Chat.Domain.Exceptions.NotFound
         {
             get
             {
-                return $"Status Code: {StatusCode}, {base.Message}";
+                return $"Status Code: {StatusCode}. {base.Message}";
             }
         }
     }

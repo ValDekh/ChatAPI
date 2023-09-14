@@ -23,12 +23,14 @@ namespace Chat.Infrastructure.Repositories
 
         public async Task AddAsync(TEntity entity)
         {
+            entity.CreatedDate = DateTime.Now;
             await _entityCollection.InsertOneAsync(entity);
         }
 
         public async Task UpdateAsync(ObjectId id, TEntity entity)
         {
             var filter = Builders<TEntity>.Filter.Eq(x => x.Id, id);
+            entity.UpdatedDate = DateTime.UtcNow;
             await _entityCollection.ReplaceOneAsync(filter, entity);
         }
 
