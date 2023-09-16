@@ -33,7 +33,6 @@ namespace Chat.WebApi.Middlewares
             {
                 error = exception.Message
             };
-
             await httpContext.Response.WriteAsync(JsonSerializer.Serialize(response));
         }
     }
