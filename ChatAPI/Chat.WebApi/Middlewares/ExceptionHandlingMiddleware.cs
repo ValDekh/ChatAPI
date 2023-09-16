@@ -1,4 +1,5 @@
-﻿using Chat.Domain.Exceptions.NotFound;
+﻿using Chat.Domain.Exceptions.ForbiddenException;
+using Chat.Domain.Exceptions.NotFound;
 using System.Text.Json;
 
 namespace Chat.WebApi.Middlewares
@@ -24,8 +25,9 @@ namespace Chat.WebApi.Middlewares
             {
                 NotFoundException => StatusCodes.Status404NotFound,
                 InvalidDataException => StatusCodes.Status400BadRequest,
+                ForbiddenException => StatusCodes.Status403Forbidden,
                 _ => StatusCodes.Status500InternalServerError
-            };
+            }; ;
 
             var response = new
             {
