@@ -27,7 +27,7 @@ namespace Chat.WebApi.Middlewares
                 InvalidDataException => StatusCodes.Status400BadRequest,
                 ForbiddenException => StatusCodes.Status403Forbidden,
                 _ => StatusCodes.Status500InternalServerError
-            }; ;
+            };
 
             var response = new
             {
