@@ -1,0 +1,62 @@
+{
+	{
+		"users": [
+			"3fa85f64-5717-4562-b3fc-2c963f66afa6",
+			"93673dcf-0389-4684-8483-bcc51c1ddb60",
+			"b5938e86-e054-4202-b46b-ce65544c588e"
+		],
+		"messages": [
+			{
+				"senderId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+				"receiverId": "93673dcf-0389-4684-8483-bcc51c1ddb60",
+				"chatId": "b5938e86-e054-4202-b46b-ce65544c588e",
+				"text": "HELLLOOOO",
+				"trackUrl": "HELLLOOOO.com.ua"
+			}
+		]
+	}
+
+
+	{
+		"users": [
+			"3fa85f64-5717-4562-b3fc-2c963f66afa6",
+			"93673dcf-0389-4684-8483-bcc51c1ddb60",
+			"b5938e86-e054-4202-b46b-ce65544c588e"
+		],
+		"messages": [
+			{
+				"fromWho": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+				"forWho": "93673dcf-0389-4684-8483-bcc51c1ddb60",
+				"chatId": "b5938e86-e054-4202-b46b-ce65544c588e",
+				"textMessage": "NEW ONE HELLLOOOO"
+			}
+		]
+	}
+
+	{
+		"users": [
+			"3fa85f64-5717-4562-b3fc-2c963f66afa6",
+			"93673dcf-0389-4684-8483-bcc51c1ddb60",
+			"b5938e86-e054-4202-b46b-ce65544c588e"
+		],
+		"messages": [
+			{
+				"fromWho": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+				"forWho": "93673dcf-0389-4684-8483-bcc51c1ddb60",
+				"chatId": "b5938e86-e054-4202-b46b-ce65544c588e",
+				"textMessage": "NEW SERVICES"
+			}
+		]
+	}
+
+	{
+		"id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+		"senderId": "93673dcf-0389-4684-8483-bcc51c1ddb60",
+		"receiverId": "b5938e86-e054-4202-b46b-ce65544c588e",
+		"chatId": "98276361-7dd3-4b84-9c46-3190219537f0",
+		"textMessage": "This is new messages",
+		"trackUrl": "track.music.com.ua"
+	}
+
+}
+
